@@ -34,7 +34,7 @@ export default function RootLayout({
         </div>
 
         {/* Navigation Bar */}
-        <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md z-50">
+        <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md z-40">
           <div className="glass rounded-full p-2 shadow-tropical border border-white/20 flex items-center justify-around">
             <Link href="/itinerario" className="p-3 text-caribbean-600 hover:text-caribbean-800 transition-all hover:bg-white/40 rounded-full flex flex-col items-center gap-1">
               <Calendar size={20} />

@@ -177,7 +177,7 @@ export default function ItinerarioPage() {
 
       {/* Modal Formulario (Fuera del z-index container) */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-6">
           <div className="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <h2 className="font-display text-2xl font-bold text-caribbean-800">
