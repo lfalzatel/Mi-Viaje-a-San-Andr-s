@@ -383,7 +383,7 @@ export default function EquipajePage() {
                       className={`transition-all transform active:scale-90 ${item.empacado ? 'text-green-500' : 'text-caribbean-200 hover:text-caribbean-400'
                         }`}
                     >
-                      {item.empacado ? <CheckCircle2 size={26} fill="currentColor" className="text-white" /> : <Circle size={26} />}
+                      {item.empacado ? <CheckCircle2 size={26} /> : <Circle size={26} />}
                     </button>
 
                     <div className="flex-1">

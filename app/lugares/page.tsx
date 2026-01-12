@@ -356,7 +356,7 @@ export default function LugaresPage() {
                       className={`mt-1 transition-all transform active:scale-90 ${lugar.visitado ? 'text-green-500' : 'text-sand-200 hover:text-sand-400'
                         }`}
                     >
-                      {lugar.visitado ? <CheckCircle2 size={26} fill="currentColor" className="text-white" /> : <Circle size={26} />}
+                      {lugar.visitado ? <CheckCircle2 size={26} /> : <Circle size={26} />}
                     </button>
 
                     <div className="flex-1">

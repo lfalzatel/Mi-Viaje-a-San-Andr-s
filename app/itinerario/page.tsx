@@ -300,7 +300,7 @@ export default function ItinerarioPage() {
                     className={`mt-1 transition-all transform active:scale-90 ${evento.completado ? 'text-green-500' : 'text-caribbean-200 hover:text-caribbean-400'
                       }`}
                   >
-                    {evento.completado ? <CheckCircle2 size={26} fill="currentColor" className="text-white" /> : <Circle size={26} />}
+                    {evento.completado ? <CheckCircle2 size={26} /> : <Circle size={26} />}
                   </button>
 
                   <div className="flex-1">
