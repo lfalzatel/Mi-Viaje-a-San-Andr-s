@@ -52,6 +52,7 @@ export type Database = {
           monto: number
           descripcion: string
           fecha: string
+          tipo: string
           created_at: string
         }
         Insert: {
@@ -60,6 +61,7 @@ export type Database = {
           monto: number
           descripcion: string
           fecha: string
+          tipo?: string
           created_at?: string
         }
         Update: {
@@ -68,6 +70,7 @@ export type Database = {
           monto?: number
           descripcion?: string
           fecha?: string
+          tipo?: string
           created_at?: string
         }
       }
