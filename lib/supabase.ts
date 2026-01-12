@@ -1,9 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Solución temporal: credenciales hardcodeadas
-// TODO: Mover a variables de entorno cuando Vercel las reconozca correctamente
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://sqkogitljnoaxirhrwq.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_jFfHJbJ4ujbrc-rgM4XQFA_TwKNSmC9'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Supabase environment variables are missing. Please configure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.')
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
