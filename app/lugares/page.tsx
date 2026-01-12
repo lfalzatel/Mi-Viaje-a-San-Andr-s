@@ -161,6 +161,107 @@ export default function LugaresPage() {
         </div>
       </div>
 
+      {/* Modal Formulario (Fuera al z-index container) */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+          <div className="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-display text-2xl font-bold text-sand-800">
+                {editingId ? 'Editar Lugar' : 'Nuevo Lugar'}
+              </h2>
+              <button onClick={handleCloseForm} className="p-2 hover:bg-gray-100 rounded-full">
+                <X size={24} className="text-gray-400" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-sand-500 uppercase tracking-wider mb-1">
+                  Nombre del lugar
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ej: Johnny Cay"
+                  value={formData.nombre}
+                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-sand-50 border-2 border-transparent focus:border-sand-400 focus:bg-white focus:outline-none transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-sand-500 uppercase tracking-wider mb-1">
+                  Categoría
+                </label>
+                <select
+                  required
+                  value={formData.categoria}
+                  onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-sand-50 border-2 border-transparent focus:border-sand-400 focus:bg-white focus:outline-none transition-all"
+                >
+                  {categorias.map(cat => (
+                    <option key={cat.value} value={cat.value}>
+                      {cat.emoji} {cat.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-sand-500 uppercase tracking-wider mb-1">
+                  Prioridad
+                </label>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3].map(n => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, prioridad: n })}
+                      className={`flex-1 py-3 rounded-xl font-bold transition-all border-2 ${formData.prioridad === n
+                        ? 'bg-sand-600 border-sand-600 text-white shadow-lg'
+                        : 'bg-sand-50 border-transparent text-sand-400 hover:bg-sand-100'
+                        }`}
+                    >
+                      <Star size={16} className="inline mb-1" fill={formData.prioridad === n ? 'currentColor' : 'none'} />
+                      <span className="ml-1">{n === 1 ? 'Baja' : n === 2 ? 'Media' : 'Alta'}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-sand-500 uppercase tracking-wider mb-1">
+                  Descripción
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="¿Qué hace especial este lugar?"
+                  value={formData.descripcion}
+                  onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-sand-50 border-2 border-transparent focus:border-sand-400 focus:bg-white focus:outline-none transition-all resize-none"
+                />
+              </div>
+
+              <div className="pt-4 flex flex-col gap-3 pb-12">
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-sand-500 to-sand-600 text-white py-4 rounded-2xl font-bold hover:shadow-lg transition-all active:scale-95"
+                >
+                  {editingId ? 'Actualizar Cambios' : 'Guardar Lugar'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCloseForm}
+                  className="w-full bg-gray-100 text-gray-600 py-3 rounded-2xl font-semibold hover:bg-gray-200 transition-all"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="px-6 -mt-16 max-w-4xl mx-auto relative z-20">
         {/* Progreso */}
         <div className="bg-white rounded-3xl p-6 shadow-tropical mb-6">
@@ -220,107 +321,6 @@ export default function LugaresPage() {
           <Plus size={24} className="mr-2" />
           Agregar nuevo lugar
         </button>
-
-        {/* Modal Formulario */}
-        {showForm && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-            <div className="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="font-display text-2xl font-bold text-sand-800">
-                  {editingId ? 'Editar Lugar' : 'Nuevo Lugar'}
-                </h2>
-                <button onClick={handleCloseForm} className="p-2 hover:bg-gray-100 rounded-full">
-                  <X size={24} className="text-gray-400" />
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-sand-500 uppercase tracking-wider mb-1">
-                    Nombre del lugar
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Ej: Johnny Cay"
-                    value={formData.nombre}
-                    onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-sand-50 border-2 border-transparent focus:border-sand-400 focus:bg-white focus:outline-none transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-sand-500 uppercase tracking-wider mb-1">
-                    Categoría
-                  </label>
-                  <select
-                    required
-                    value={formData.categoria}
-                    onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-sand-50 border-2 border-transparent focus:border-sand-400 focus:bg-white focus:outline-none transition-all"
-                  >
-                    {categorias.map(cat => (
-                      <option key={cat.value} value={cat.value}>
-                        {cat.emoji} {cat.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-sand-500 uppercase tracking-wider mb-1">
-                    Prioridad
-                  </label>
-                  <div className="flex items-center gap-2">
-                    {[1, 2, 3].map(n => (
-                      <button
-                        key={n}
-                        type="button"
-                        onClick={() => setFormData({ ...formData, prioridad: n })}
-                        className={`flex-1 py-3 rounded-xl font-bold transition-all border-2 ${formData.prioridad === n
-                          ? 'bg-sand-600 border-sand-600 text-white shadow-lg'
-                          : 'bg-sand-50 border-transparent text-sand-400 hover:bg-sand-100'
-                          }`}
-                      >
-                        <Star size={16} className="inline mb-1" fill={formData.prioridad === n ? 'currentColor' : 'none'} />
-                        <span className="ml-1">{n === 1 ? 'Baja' : n === 2 ? 'Media' : 'Alta'}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-sand-500 uppercase tracking-wider mb-1">
-                    Descripción
-                  </label>
-                  <textarea
-                    rows={3}
-                    placeholder="¿Qué hace especial este lugar?"
-                    value={formData.descripcion}
-                    onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-sand-50 border-2 border-transparent focus:border-sand-400 focus:bg-white focus:outline-none transition-all resize-none"
-                  />
-                </div>
-
-                <div className="pt-4 flex flex-col gap-3">
-                  <button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-sand-500 to-sand-600 text-white py-4 rounded-2xl font-bold hover:shadow-lg transition-all active:scale-95"
-                  >
-                    {editingId ? 'Actualizar Cambios' : 'Guardar Lugar'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleCloseForm}
-                    className="w-full bg-gray-100 text-gray-600 py-3 rounded-2xl font-semibold hover:bg-gray-200 transition-all"
-                  >
-                    Cancelar
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
 
         {/* Lista de lugares */}
         {loading ? (

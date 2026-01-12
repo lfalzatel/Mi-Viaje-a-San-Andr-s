@@ -169,6 +169,72 @@ export default function EquipajePage() {
         </div>
       </div>
 
+      {/* Modal Formulario (Fuera al z-index container) */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+          <div className="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-display text-2xl font-bold text-caribbean-800">
+                {editingId ? 'Editar Ítem' : 'Nuevo Ítem'}
+              </h2>
+              <button onClick={handleCloseForm} className="p-2 hover:bg-gray-100 rounded-full">
+                <X size={24} className="text-gray-400" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">
+                  Nombre del ítem
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ej: Camiseta blanca"
+                  value={formData.item}
+                  onChange={(e) => setFormData({ ...formData, item: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-caribbean-50 border-2 border-transparent focus:border-caribbean-400 focus:bg-white focus:outline-none transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">
+                  Categoría
+                </label>
+                <select
+                  required
+                  value={formData.categoria}
+                  onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-caribbean-50 border-2 border-transparent focus:border-caribbean-400 focus:bg-white focus:outline-none transition-all"
+                >
+                  {categorias.map(cat => (
+                    <option key={cat.value} value={cat.value}>
+                      {cat.emoji} {cat.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="pt-4 flex flex-col gap-3 pb-12">
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-caribbean-500 to-coral-400 text-white py-4 rounded-2xl font-bold hover:shadow-lg transition-all active:scale-95"
+                >
+                  {editingId ? 'Actualizar Ítem' : 'Guardar Ítem'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCloseForm}
+                  className="w-full bg-gray-100 text-gray-600 py-3 rounded-2xl font-semibold hover:bg-gray-200 transition-all"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="px-6 -mt-16 max-w-4xl mx-auto relative z-20">
         {/* Progreso */}
         <div className="bg-white rounded-3xl p-6 shadow-tropical mb-6">
@@ -282,72 +348,6 @@ export default function EquipajePage() {
           <Plus size={24} className="mr-2" />
           Nuevo ítem de equipaje
         </button>
-
-        {/* Modal Formulario */}
-        {showForm && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-            <div className="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl animate-scale-in overflow-y-auto">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="font-display text-2xl font-bold text-caribbean-800">
-                  {editingId ? 'Editar Ítem' : 'Nuevo Ítem'}
-                </h2>
-                <button onClick={handleCloseForm} className="p-2 hover:bg-gray-100 rounded-full">
-                  <X size={24} className="text-gray-400" />
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">
-                    Nombre del ítem
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Ej: Camiseta blanca"
-                    value={formData.item}
-                    onChange={(e) => setFormData({ ...formData, item: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-caribbean-50 border-2 border-transparent focus:border-caribbean-400 focus:bg-white focus:outline-none transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">
-                    Categoría
-                  </label>
-                  <select
-                    required
-                    value={formData.categoria}
-                    onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-caribbean-50 border-2 border-transparent focus:border-caribbean-400 focus:bg-white focus:outline-none transition-all"
-                  >
-                    {categorias.map(cat => (
-                      <option key={cat.value} value={cat.value}>
-                        {cat.emoji} {cat.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="pt-4 flex flex-col gap-3">
-                  <button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-caribbean-500 to-coral-400 text-white py-4 rounded-2xl font-bold hover:shadow-lg transition-all active:scale-95"
-                  >
-                    {editingId ? 'Actualizar Ítem' : 'Guardar Ítem'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleCloseForm}
-                    className="w-full bg-gray-100 text-gray-600 py-3 rounded-2xl font-semibold hover:bg-gray-200 transition-all"
-                  >
-                    Cancelar
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
 
         {/* Lista de items */}
         {loading ? (

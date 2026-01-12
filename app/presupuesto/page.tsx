@@ -171,6 +171,100 @@ export default function PresupuestoPage() {
         </div>
       </div>
 
+      {/* Modal Formulario (Fuera del z-index container) */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+          <div className="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-display text-2xl font-bold text-coral-800">
+                {editingId ? 'Editar Gasto' : `Nuevo Gasto ${subTab === 'personal' ? 'Personal' : 'Grupal'}`}
+              </h2>
+              <button onClick={handleCloseForm} className="p-2 hover:bg-gray-100 rounded-full">
+                <X size={24} className="text-gray-400" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-coral-500 uppercase tracking-wider mb-1">
+                    Categoría
+                  </label>
+                  <select
+                    required
+                    value={formData.categoria}
+                    onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl bg-coral-50 border-2 border-transparent focus:border-coral-400 focus:bg-white focus:outline-none transition-all"
+                  >
+                    {categorias.map(cat => (
+                      <option key={cat.value} value={cat.value}>{cat.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-coral-500 uppercase tracking-wider mb-1">
+                    Monto {subTab === 'grupal' ? 'Total' : '(COP)'}
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    step="1000"
+                    placeholder="50000"
+                    value={formData.monto}
+                    onChange={(e) => setFormData({ ...formData, monto: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl bg-coral-50 border-2 border-transparent focus:border-coral-400 focus:bg-white focus:outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-coral-500 uppercase tracking-wider mb-1">
+                  Descripción
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder={subTab === 'personal' ? "Ej: Regalo para mi" : "Ej: Cena para todos"}
+                  value={formData.descripcion}
+                  onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-coral-50 border-2 border-transparent focus:border-coral-400 focus:bg-white focus:outline-none transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-coral-500 uppercase tracking-wider mb-1">
+                  Fecha
+                </label>
+                <input
+                  type="date"
+                  required
+                  value={formData.fecha}
+                  onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-coral-50 border-2 border-transparent focus:border-coral-400 focus:bg-white focus:outline-none transition-all"
+                />
+              </div>
+
+              <div className="pt-4 flex flex-col gap-3 pb-12">
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-coral-500 to-coral-600 text-white py-4 rounded-2xl font-bold hover:shadow-lg transition-all active:scale-95"
+                >
+                  {editingId ? 'Actualizar Gasto' : 'Guardar Gasto'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCloseForm}
+                  className="w-full bg-gray-100 text-gray-600 py-3 rounded-2xl font-semibold hover:bg-gray-200 transition-all"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="px-6 -mt-16 max-w-4xl mx-auto relative z-20">
         {/* Selector de Sub-pestañas */}
         <div className="bg-white/20 backdrop-blur-md p-1.5 rounded-2xl mb-6 flex gap-1 border border-white/30">
@@ -248,8 +342,8 @@ export default function PresupuestoPage() {
                 <div className="h-4 bg-gray-100 rounded-full overflow-hidden border border-gray-100 p-0.5">
                   <div
                     className={`h-full rounded-full transition-all duration-1000 ${porcentajeGastado > 100 ? 'bg-red-500' :
-                        porcentajeGastado > 80 ? 'bg-orange-500' :
-                          'bg-gradient-to-r from-coral-400 to-coral-500'
+                      porcentajeGastado > 80 ? 'bg-orange-500' :
+                        'bg-gradient-to-r from-coral-400 to-coral-500'
                       }`}
                     style={{ width: `${Math.min(porcentajeGastado, 100)}%` }}
                   />
@@ -304,100 +398,6 @@ export default function PresupuestoPage() {
           <Plus size={24} className="mr-2" />
           Registrar {subTab === 'personal' ? 'mi gasto' : 'gasto grupal'}
         </button>
-
-        {/* Modal Formulario */}
-        {showForm && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-            <div className="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="font-display text-2xl font-bold text-coral-800">
-                  {editingId ? 'Editar Gasto' : `Nuevo Gasto ${subTab === 'personal' ? 'Personal' : 'Grupal'}`}
-                </h2>
-                <button onClick={handleCloseForm} className="p-2 hover:bg-gray-100 rounded-full">
-                  <X size={24} className="text-gray-400" />
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-coral-500 uppercase tracking-wider mb-1">
-                      Categoría
-                    </label>
-                    <select
-                      required
-                      value={formData.categoria}
-                      onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-coral-50 border-2 border-transparent focus:border-coral-400 focus:bg-white focus:outline-none transition-all"
-                    >
-                      {categorias.map(cat => (
-                        <option key={cat.value} value={cat.value}>{cat.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-coral-500 uppercase tracking-wider mb-1">
-                      Monto {subTab === 'grupal' ? 'Total' : '(COP)'}
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      min="0"
-                      step="1000"
-                      placeholder="50000"
-                      value={formData.monto}
-                      onChange={(e) => setFormData({ ...formData, monto: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-coral-50 border-2 border-transparent focus:border-coral-400 focus:bg-white focus:outline-none transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-coral-500 uppercase tracking-wider mb-1">
-                    Descripción
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder={subTab === 'personal' ? "Ej: Regalo para mi" : "Ej: Cena para todos"}
-                    value={formData.descripcion}
-                    onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-coral-50 border-2 border-transparent focus:border-coral-400 focus:bg-white focus:outline-none transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-coral-500 uppercase tracking-wider mb-1">
-                    Fecha
-                  </label>
-                  <input
-                    type="date"
-                    required
-                    value={formData.fecha}
-                    onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-coral-50 border-2 border-transparent focus:border-coral-400 focus:bg-white focus:outline-none transition-all"
-                  />
-                </div>
-
-                <div className="pt-4 flex flex-col gap-3">
-                  <button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-coral-500 to-coral-600 text-white py-4 rounded-2xl font-bold hover:shadow-lg transition-all active:scale-95"
-                  >
-                    {editingId ? 'Actualizar Gasto' : 'Guardar Gasto'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleCloseForm}
-                    className="w-full bg-gray-100 text-gray-600 py-3 rounded-2xl font-semibold hover:bg-gray-200 transition-all"
-                  >
-                    Cancelar
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
 
         {/* Lista de gastos */}
         {loading ? (
