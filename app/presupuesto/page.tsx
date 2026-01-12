@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, DollarSign, Trash2, TrendingUp, Edit2, X, Wallet } from 'lucide-react'
@@ -187,8 +189,8 @@ export default function PresupuestoPage() {
             <div className="h-4 bg-gray-100 rounded-full overflow-hidden border border-gray-100 p-0.5">
               <div
                 className={`h-full rounded-full transition-all duration-1000 ${porcentajeGastado > 100 ? 'bg-red-500' :
-                    porcentajeGastado > 80 ? 'bg-orange-500' :
-                      'bg-gradient-to-r from-coral-400 to-coral-500'
+                  porcentajeGastado > 80 ? 'bg-orange-500' :
+                    'bg-gradient-to-r from-coral-400 to-coral-500'
                   }`}
                 style={{ width: `${Math.min(porcentajeGastado, 100)}%` }}
               />

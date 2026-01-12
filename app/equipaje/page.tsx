@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Package, Trash2, CheckCircle2, Circle, Edit2, X, Briefcase } from 'lucide-react'
@@ -231,8 +233,8 @@ export default function EquipajePage() {
                             }}
                             disabled={yaExiste}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border-2 ${yaExiste
-                                ? 'bg-gray-50 border-gray-50 text-gray-300 cursor-not-allowed'
-                                : 'bg-white border-caribbean-50 text-caribbean-600 hover:border-caribbean-200'
+                              ? 'bg-gray-50 border-gray-50 text-gray-300 cursor-not-allowed'
+                              : 'bg-white border-caribbean-50 text-caribbean-600 hover:border-caribbean-200'
                               }`}
                           >
                             + {item}
@@ -252,8 +254,8 @@ export default function EquipajePage() {
           <button
             onClick={() => setFiltroCategoria('todos')}
             className={`px-6 py-2.5 rounded-2xl font-bold whitespace-nowrap transition-all text-sm border-2 ${filtroCategoria === 'todos'
-                ? 'bg-caribbean-600 border-caribbean-600 text-white shadow-xl'
-                : 'bg-white border-white text-caribbean-500'
+              ? 'bg-caribbean-600 border-caribbean-600 text-white shadow-xl'
+              : 'bg-white border-white text-caribbean-500'
               }`}
           >
             Todos
@@ -263,8 +265,8 @@ export default function EquipajePage() {
               key={cat.value}
               onClick={() => setFiltroCategoria(cat.value)}
               className={`px-6 py-2.5 rounded-2xl font-bold whitespace-nowrap transition-all text-sm border-2 ${filtroCategoria === cat.value
-                  ? `${cat.color} border-white text-white shadow-xl`
-                  : 'bg-white border-white text-gray-500'
+                ? `${cat.color} border-white text-white shadow-xl`
+                : 'bg-white border-white text-gray-500'
                 }`}
             >
               {cat.emoji} {cat.label}

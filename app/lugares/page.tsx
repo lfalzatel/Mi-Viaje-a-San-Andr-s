@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, MapPin, Trash2, CheckCircle2, Circle, Star, Edit2, X } from 'lucide-react'
@@ -190,8 +192,8 @@ export default function LugaresPage() {
           <button
             onClick={() => setFiltroCategoria('todos')}
             className={`px-6 py-2.5 rounded-2xl font-bold whitespace-nowrap transition-all text-sm border-2 ${filtroCategoria === 'todos'
-                ? 'bg-sand-600 border-sand-600 text-white shadow-xl translate-y-[-2px]'
-                : 'bg-white border-white text-sand-500'
+              ? 'bg-sand-600 border-sand-600 text-white shadow-xl translate-y-[-2px]'
+              : 'bg-white border-white text-sand-500'
               }`}
           >
             Todos
@@ -201,8 +203,8 @@ export default function LugaresPage() {
               key={cat.value}
               onClick={() => setFiltroCategoria(cat.value)}
               className={`px-6 py-2.5 rounded-2xl font-bold whitespace-nowrap transition-all text-sm border-2 ${filtroCategoria === cat.value
-                  ? `${cat.color} border-white text-white shadow-xl translate-y-[-2px]`
-                  : 'bg-white border-white text-gray-500'
+                ? `${cat.color} border-white text-white shadow-xl translate-y-[-2px]`
+                : 'bg-white border-white text-gray-500'
                 }`}
             >
               {cat.emoji} {cat.label}
@@ -276,8 +278,8 @@ export default function LugaresPage() {
                         type="button"
                         onClick={() => setFormData({ ...formData, prioridad: n })}
                         className={`flex-1 py-3 rounded-xl font-bold transition-all border-2 ${formData.prioridad === n
-                            ? 'bg-sand-600 border-sand-600 text-white shadow-lg'
-                            : 'bg-sand-50 border-transparent text-sand-400 hover:bg-sand-100'
+                          ? 'bg-sand-600 border-sand-600 text-white shadow-lg'
+                          : 'bg-sand-50 border-transparent text-sand-400 hover:bg-sand-100'
                           }`}
                       >
                         <Star size={16} className="inline mb-1" fill={formData.prioridad === n ? 'currentColor' : 'none'} />

@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Calendar, Clock, MapPin, Trash2, CheckCircle2, Circle, Edit2, X } from 'lucide-react'
