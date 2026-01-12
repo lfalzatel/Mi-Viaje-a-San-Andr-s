@@ -21,6 +21,7 @@ export type Database = {
           descripcion: string
           hora: string
           ubicacion: string
+          completado: boolean
           created_at: string
         }
         Insert: {
@@ -30,6 +31,7 @@ export type Database = {
           descripcion?: string
           hora?: string
           ubicacion?: string
+          completado?: boolean
           created_at?: string
         }
         Update: {
@@ -39,6 +41,7 @@ export type Database = {
           descripcion?: string
           hora?: string
           ubicacion?: string
+          completado?: boolean
           created_at?: string
         }
       }
