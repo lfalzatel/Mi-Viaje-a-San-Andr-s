@@ -22,6 +22,7 @@ export type Database = {
           hora: string
           ubicacion: string
           completado: boolean
+          precio: number
           created_at: string
         }
         Insert: {

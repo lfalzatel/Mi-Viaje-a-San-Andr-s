@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Plus, Calendar, Clock, MapPin, Trash2, CheckCircle2, Circle, Edit2, X } from 'lucide-react'
+import { ArrowLeft, Plus, Calendar, Clock, MapPin, Trash2, CheckCircle2, Circle, Edit2, X, DollarSign } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
 type Evento = {
@@ -13,6 +13,7 @@ type Evento = {
   hora: string
   ubicacion: string
   completado: boolean
+  precio: number
 }
 
 export default function ItinerarioPage() {
@@ -26,7 +27,8 @@ export default function ItinerarioPage() {
     descripcion: '',
     hora: '',
     ubicacion: '',
-    completado: false
+    completado: false,
+    precio: ''
   })
 
   useEffect(() => {
@@ -57,7 +59,8 @@ export default function ItinerarioPage() {
       descripcion: evento.descripcion || '',
       hora: evento.hora || '',
       ubicacion: evento.ubicacion || '',
-      completado: evento.completado || false
+      completado: evento.completado || false,
+      precio: (evento.precio || 0).toString()
     })
     setEditingId(evento.id)
     setShowForm(true)
@@ -66,22 +69,27 @@ export default function ItinerarioPage() {
   const handleCloseForm = () => {
     setShowForm(false)
     setEditingId(null)
-    setFormData({ fecha: '', titulo: '', descripcion: '', hora: '', ubicacion: '', completado: false })
+    setFormData({ fecha: '', titulo: '', descripcion: '', hora: '', ubicacion: '', completado: false, precio: '' })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
+      const payload = {
+        ...formData,
+        precio: parseFloat(formData.precio) || 0
+      }
+
       if (editingId) {
         const { error } = await supabase
           .from('itinerario')
-          .update(formData)
+          .update(payload)
           .eq('id', editingId)
         if (error) throw error
       } else {
         const { error } = await supabase
           .from('itinerario')
-          .insert([formData])
+          .insert([payload])
         if (error) throw error
       }
 
@@ -133,6 +141,15 @@ export default function ItinerarioPage() {
       day: 'numeric',
       month: 'long'
     }).format(date)
+  }
+
+  const formatearMoneda = (valor: number) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(valor)
   }
 
   return (
@@ -208,18 +225,32 @@ export default function ItinerarioPage() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">
-                    Actividad
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Ej: Snorkel en Johnny Cay"
-                    value={formData.titulo}
-                    onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-caribbean-50 border-2 border-transparent focus:border-caribbean-400 focus:bg-white focus:outline-none transition-all"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-1">
+                    <label className="block text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">
+                      Actividad
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Snorkel..."
+                      value={formData.titulo}
+                      onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-caribbean-50 border-2 border-transparent focus:border-caribbean-400 focus:bg-white focus:outline-none transition-all"
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <label className="block text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">
+                      Precio (COP)
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="0"
+                      value={formData.precio}
+                      onChange={(e) => setFormData({ ...formData, precio: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-caribbean-50 border-2 border-transparent focus:border-caribbean-400 focus:bg-white focus:outline-none transition-all"
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -304,7 +335,7 @@ export default function ItinerarioPage() {
                   </button>
 
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 text-caribbean-500 text-xs font-bold uppercase tracking-wider mb-1">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-caribbean-500 text-xs font-bold uppercase tracking-wider mb-1">
                       <span className="flex items-center gap-1">
                         <Calendar size={14} />
                         {formatearFecha(evento.fecha)}
@@ -313,6 +344,12 @@ export default function ItinerarioPage() {
                         <span className="flex items-center gap-1">
                           <Clock size={14} />
                           {evento.hora}
+                        </span>
+                      )}
+                      {evento.precio > 0 && (
+                        <span className="flex items-center gap-1 text-coral-500 bg-coral-50 px-2 py-0.5 rounded-full">
+                          <DollarSign size={12} />
+                          {formatearMoneda(evento.precio)}
                         </span>
                       )}
                     </div>
