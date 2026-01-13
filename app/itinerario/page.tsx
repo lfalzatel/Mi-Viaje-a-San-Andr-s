@@ -367,15 +367,14 @@ export default function ItinerarioPage() {
                   {((actividadesCompletadas / totalActividades) * 100).toFixed(0)}% COMPLETADO
                 </span>
               </div>
+              {((actividadesCompletadas / totalActividades) * 100) === 100 && (
+                <p className="text-[10px] font-black text-green-500 uppercase animate-bounce mt-2 text-center">
+                  ¡Viaje completado! 🎉
+                </p>
+              )}
             </div>
           </div>
         </div>
-    {porcentajeCompletado === 100 && (
-              <p className="text-[10px] font-black text-green-500 uppercase animate-bounce">
-                ¡Viaje completado! 🎉
-              </p>
-            )}
-          </div>
 
         {/* Botón agregar */}
         {isAdmin && (
