@@ -31,7 +31,7 @@ export default function RootLayout({
     <html lang="es">
       <body className="bg-caribbean-50">
         <AuthProvider>
-          <div className="pb-24">
+          <div className="pb-32">
             {children}
           </div>
           <Navigation />

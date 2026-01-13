@@ -377,50 +377,46 @@ export default function PresupuestoPage() {
 
         {/* Resumen del presupuesto */}
         <div className="bg-white rounded-3xl p-6 shadow-tropical mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex-1">
-              <p className="text-xs font-bold text-coral-500 uppercase tracking-wider mb-1">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div className="space-y-3">
+              <p className="text-xs font-bold text-coral-500 uppercase tracking-wider">
                 {subTab === 'personal' ? 'Resumen de Gastos' : 'Total Grupo'}
               </p>
-              <div className="flex flex-col gap-1">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xs font-bold text-gray-400 uppercase tracking-tighter">Proyectado:</span>
-                  <p className="font-display text-2xl font-bold text-coral-700">
+
+              <div className="grid grid-cols-2 sm:flex sm:flex-col gap-x-4 gap-y-2">
+                <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Proyectado</span>
+                  <p className="font-display text-xl sm:text-2xl font-bold text-coral-700">
                     {formatearMoneda(totalGastado)}
                   </p>
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-[10px] font-black text-green-500 uppercase tracking-tighter">Gasto Real:</span>
-                  <p className="font-display text-2xl font-black text-green-600">
+
+                <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
+                  <span className="text-[10px] font-black text-green-500 uppercase tracking-tighter">Gasto Real</span>
+                  <p className="font-display text-xl sm:text-2xl font-black text-green-600">
                     {formatearMoneda(gastoReal)}
                   </p>
                 </div>
+
                 {subTab === 'personal' && totalGastado !== totalObligatorio && (
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-[10px] font-black text-caribbean-500 uppercase tracking-tighter">Mínimo Obligatorio:</span>
-                    <p className="font-display text-lg font-bold text-caribbean-700">
+                  <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 col-span-2">
+                    <span className="text-[10px] font-black text-caribbean-500 uppercase tracking-tighter">Mínimo Obligatorio</span>
+                    <p className="font-display text-base font-bold text-caribbean-700">
                       {formatearMoneda(totalObligatorio)}
                     </p>
                   </div>
                 )}
               </div>
             </div>
-            {subTab === 'grupal' && (
-              <div className="text-right">
-                <p className="text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">Por Persona</p>
-                <p className="font-display text-3xl font-bold text-caribbean-700 font-mono">
-                  {formatearMoneda(totalGastado / numPersonas)}
-                </p>
-              </div>
-            )}
-            {subTab === 'personal' && (
-              <div className="text-right">
-                <p className="text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">Presupuesto Libre</p>
-                <p className={`font-display text-2xl font-bold ${disponible < 0 ? 'text-red-600' : 'text-caribbean-700'}`}>
-                  {formatearMoneda(disponible)}
-                </p>
-              </div>
-            )}
+
+            <div className="bg-caribbean-50/50 p-4 rounded-2xl flex flex-col items-center justify-center min-w-[120px]">
+              <p className="text-[10px] font-bold text-caribbean-500 uppercase tracking-wider mb-1 text-center">
+                {subTab === 'personal' ? 'Presupuesto Libre' : 'Por Persona'}
+              </p>
+              <p className={`font-display text-2xl font-bold text-center ${subTab === 'personal' && disponible < 0 ? 'text-red-600' : 'text-caribbean-700'}`}>
+                {subTab === 'personal' ? formatearMoneda(disponible) : formatearMoneda(totalGastado / numPersonas)}
+              </p>
+            </div>
           </div>
 
           {subTab === 'grupal' && (
@@ -545,19 +541,26 @@ export default function PresupuestoPage() {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start mb-0.5">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <h3 className="font-display font-bold text-gray-900 truncate max-w-[200px]">
-                          {gasto.descripcion}
-                        </h3>
-                        {gasto.esOpcional && (
-                          <span className="bg-caribbean-50 text-caribbean-600 text-[8px] font-black px-1.5 py-0.5 rounded-full border border-caribbean-100 uppercase tracking-tighter shrink-0">
-                            Opcional
-                          </span>
-                        )}
+                    <div className="flex justify-between items-start gap-4 mb-1">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-1.5 mb-1">
+                          <h3 className="font-display font-bold text-gray-900 truncate text-base">
+                            {gasto.descripcion}
+                          </h3>
+                          {gasto.esOpcional && (
+                            <span className="bg-caribbean-50 text-caribbean-600 text-[8px] font-black px-1.5 py-0.5 rounded-full border border-caribbean-100 uppercase tracking-tighter shrink-0">
+                              Opcional
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
+                          <span>{cat.label}</span>
+                          <span className="mx-2 font-normal text-gray-300">•</span>
+                          <span>{new Date(gasto.fecha + 'T00:00:00').toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</span>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-display font-bold text-coral-600 whitespace-nowrap">
+                      <div className="text-right flex-shrink-0">
+                        <p className="font-display font-bold text-coral-600 whitespace-nowrap text-lg">
                           {formatearMoneda(gasto.monto)}
                         </p>
                         {subTab === 'grupal' && (
@@ -566,11 +569,6 @@ export default function PresupuestoPage() {
                           </p>
                         )}
                       </div>
-                    </div>
-                    <div className="flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
-                      <span>{cat.label}</span>
-                      <span className="mx-2 font-normal text-gray-300">•</span>
-                      <span>{new Date(gasto.fecha + 'T00:00:00').toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</span>
                     </div>
                   </div>
 

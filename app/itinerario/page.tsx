@@ -383,29 +383,31 @@ export default function ItinerarioPage() {
                   </button>
 
                   <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-caribbean-500 text-xs font-bold uppercase tracking-wider mb-1">
-                      <span className="flex items-center gap-1">
-                        <Calendar size={14} />
-                        {formatearFecha(evento.fecha)}
-                      </span>
-                      {evento.hora && (
-                        <span className="flex items-center gap-1">
-                          <Clock size={14} />
-                          {evento.hora}
-                        </span>
-                      )}
+                    <div className="flex justify-between items-start gap-4 mb-2">
+                      <h3 className={`font-display text-lg sm:text-xl font-bold transition-all leading-tight ${evento.completado ? 'text-gray-400 line-through' : 'text-caribbean-900'
+                        }`}>
+                        {evento.titulo}
+                      </h3>
                       {evento.precio > 0 && (
-                        <span className="flex items-center gap-1 text-coral-500 bg-coral-50 px-2 py-0.5 rounded-full">
-                          <DollarSign size={12} />
+                        <span className="flex items-center gap-1 text-coral-500 bg-coral-50 px-2.5 py-1 rounded-xl text-sm font-bold shrink-0">
+                          <DollarSign size={14} />
                           {formatearMoneda(evento.precio)}
                         </span>
                       )}
                     </div>
 
-                    <h3 className={`font-display text-xl font-bold mb-1 transition-all ${evento.completado ? 'text-gray-400 line-through' : 'text-caribbean-900'
-                      }`}>
-                      {evento.titulo}
-                    </h3>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-caribbean-500 text-[10px] font-bold uppercase tracking-wider mb-2">
+                      <span className="flex items-center gap-1">
+                        <Calendar size={12} />
+                        {formatearFecha(evento.fecha)}
+                      </span>
+                      {evento.hora && (
+                        <span className="flex items-center gap-1 px-1.5 py-0.5 bg-caribbean-50 rounded-md">
+                          <Clock size={12} />
+                          {evento.hora}
+                        </span>
+                      )}
+                    </div>
 
                     {evento.ubicacion && (
                       <div className="flex items-center gap-1.5 text-caribbean-600 mb-2">
