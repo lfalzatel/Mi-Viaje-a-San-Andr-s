@@ -343,7 +343,7 @@ export default function ItinerarioPage() {
                 <p className="text-[10px] font-black text-caribbean-500 uppercase tracking-[0.2em] mb-1">Tu Aventura</p>
                 <div className="flex items-baseline gap-1">
                   <span className="font-display text-3xl font-black text-caribbean-900">{actividadesCompletadas}</span>
-                  <span className="text-sm font-bold text-caribbean-400">/ {totalActividades}</span>
+                  <span className="text-sm font-bold text-caribbean-400">de {totalActividades} planes</span>
                 </div>
               </div>
               <div className="text-right">
