@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Plus, DollarSign, Trash2, TrendingUp, Edit2, X, Wallet, Users, User, Calendar } from 'lucide-react'
+import { ArrowLeft, Plus, DollarSign, Trash2, TrendingUp, Edit2, X, Wallet, Users, User, Calendar, CheckCircle2 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/auth-context'
 
@@ -16,9 +16,11 @@ type Gasto = {
   hora?: string
   esItinerario?: boolean
   esOpcional?: boolean
+  completado?: boolean
 }
 
 const categorias = [
+  // ... existing categories ...
   { value: 'transporte', label: 'Transporte', color: 'bg-blue-500', icon: '✈️' },
   { value: 'alojamiento', label: 'Alojamiento', color: 'bg-purple-500', icon: '🏨' },
   { value: 'comida', label: 'Comida', color: 'bg-green-500', icon: '🍱' },
@@ -28,6 +30,7 @@ const categorias = [
 ]
 
 export default function PresupuestoPage() {
+  // ... existing state and logic ...
   const [gastos, setGastos] = useState<Gasto[]>([])
   const [loading, setLoading] = useState(true)
   const { role } = useAuth()
@@ -92,7 +95,8 @@ export default function PresupuestoPage() {
           hora: item.hora,
           tipo: 'personal',
           esItinerario: true,
-          esOpcional: titulo.includes('(opcional)') || desc.includes('(opcional)')
+          esOpcional: titulo.includes('(opcional)') || desc.includes('(opcional)'),
+          completado: item.completado || false
         }
       })
 
@@ -108,7 +112,8 @@ export default function PresupuestoPage() {
           fecha: '2026-03-30',
           tipo: 'personal',
           esItinerario: true,
-          esOpcional: false
+          esOpcional: false,
+          completado: false
         })
       }
 
@@ -206,6 +211,11 @@ export default function PresupuestoPage() {
   const totalGastado = gastosFiltrados.reduce((sum, gasto) => sum + gasto.monto, 0)
   const totalObligatorio = gastosFiltrados
     .filter(g => !g.esOpcional)
+    .reduce((sum, gasto) => sum + gasto.monto, 0)
+
+  // Gasto Real = Gastos manuales + items de itinerario completados
+  const gastoReal = gastosFiltrados
+    .filter(g => !g.esItinerario || g.completado)
     .reduce((sum, gasto) => sum + gasto.monto, 0)
 
   const porcentajeGastado = (totalGastado / presupuestoTotal) * 100
@@ -377,6 +387,12 @@ export default function PresupuestoPage() {
                   <span className="text-xs font-bold text-gray-400 uppercase tracking-tighter">Proyectado:</span>
                   <p className="font-display text-2xl font-bold text-coral-700">
                     {formatearMoneda(totalGastado)}
+                  </p>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-[10px] font-black text-green-500 uppercase tracking-tighter">Gasto Real:</span>
+                  <p className="font-display text-2xl font-black text-green-600">
+                    {formatearMoneda(gastoReal)}
                   </p>
                 </div>
                 {subTab === 'personal' && totalGastado !== totalObligatorio && (
@@ -558,31 +574,38 @@ export default function PresupuestoPage() {
                     </div>
                   </div>
 
-                  {/* Acciones */}
-                  {!gasto.esItinerario ? (
-                    isAdmin && (
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => handleOpenEdit(gasto)}
-                          className="p-2 text-coral-300 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all"
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button
-                          onClick={() => eliminarGasto(gasto.id)}
-                          className="p-2 text-gray-300 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                  {/* Acciones y Estado */}
+                  <div className="flex items-center gap-2">
+                    {(!gasto.esItinerario || gasto.completado) && (
+                      <div className="flex items-center gap-1 bg-green-50 text-green-600 text-[8px] font-black px-2 py-1 rounded-lg border border-green-100 uppercase tracking-tighter">
+                        <CheckCircle2 size={10} />
+                        Real
                       </div>
-                    )
-                  ) : (
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="bg-coral-50 text-coral-500 text-[8px] font-black px-2 py-1 rounded-lg border border-coral-100 whitespace-nowrap uppercase tracking-tighter">
+                    )}
+
+                    {!gasto.esItinerario ? (
+                      isAdmin && (
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => handleOpenEdit(gasto)}
+                            className="p-2 text-coral-300 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all"
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <button
+                            onClick={() => eliminarGasto(gasto.id)}
+                            className="p-2 text-gray-300 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      )
+                    ) : (
+                      <div className="bg-coral-50 text-coral-500 text-[8px] font-black px-2 py-1 rounded-lg border border-coral-100 whitespace-nowrap uppercase tracking-tighter cursor-default">
                         Itinerario
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               )
             })}
