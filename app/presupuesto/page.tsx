@@ -12,6 +12,7 @@ type Gasto = {
   descripcion: string
   fecha: string
   tipo: string
+  hora?: string
   esItinerario?: boolean
 }
 
@@ -84,14 +85,25 @@ export default function PresupuestoPage() {
           monto: item.precio,
           descripcion: item.titulo,
           fecha: item.fecha,
-          tipo: 'personal', // Siempre personal por ahora
+          hora: item.hora,
+          tipo: 'personal',
           esItinerario: true
         }
       })
 
-      // Combinar y ordenar
+      // Combinar y ordenar cronológicamente
       const todosLosGastos = [...(gastosData || []), ...gastosItinerario]
-        .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
+        .sort((a, b) => {
+          // Primero por fecha
+          const dateA = new Date(a.fecha).getTime()
+          const dateB = new Date(b.fecha).getTime()
+          if (dateA !== dateB) return dateA - dateB
+
+          // Si es la misma fecha, por hora
+          const timeA = a.hora || '00:00:00'
+          const timeB = b.hora || '00:00:00'
+          return timeA.localeCompare(timeB)
+        })
 
       setGastos(todosLosGastos)
     } catch (error) {
