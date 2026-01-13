@@ -520,17 +520,6 @@ export default function PresupuestoPage() {
           </div>
         )}
 
-        {/* Botón agregar */}
-        {(isAdmin || subTab === 'personal') && (
-          <button
-            onClick={() => setShowForm(true)}
-            className="w-full bg-white rounded-2xl p-4 shadow-tropical mb-6 flex items-center justify-center text-coral-600 hover:text-coral-700 font-bold transition-all hover:scale-[1.02] border-2 border-coral-50"
-          >
-            <Plus size={24} className="mr-2" />
-            Registrar {subTab === 'personal' ? 'mi gasto' : 'gasto grupal'}
-          </button>
-        )}
-
         {/* Lista de gastos */}
         {loading ? (
           <div className="text-center py-20">
@@ -641,6 +630,20 @@ export default function PresupuestoPage() {
             * Los precios del itinerario se sincronizan automáticamente aquí. Edítalos en la pestaña de itinerario.
           </p>
         )}
+      </div>
+
+      {/* FAB de Registro de Gasto - Visible para todos */}
+      <div className="fixed bottom-24 right-6 z-50 flex flex-col items-end gap-3 pointer-events-none">
+        <button
+          onClick={() => setShowForm(true)}
+          className="pointer-events-auto p-4 bg-gradient-to-br from-coral-500 to-coral-600 text-white rounded-full shadow-[0_8px_25px_rgba(244,114,182,0.4)] hover:shadow-[0_12px_35px_rgba(244,114,182,0.5)] transition-all transform hover:scale-110 active:scale-90 group relative"
+          title="Registrar Gasto"
+        >
+          <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gray-900/80 backdrop-blur-md text-white px-3 py-1.5 rounded-xl text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Registrar {subTab === 'personal' ? 'mi gasto' : 'gasto grupal'}
+          </div>
+          <Plus size={28} className="transition-transform group-hover:rotate-90 duration-300" />
+        </button>
       </div>
 
       <style jsx>{`

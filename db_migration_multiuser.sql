@@ -56,3 +56,16 @@ CREATE POLICY "Usuarios pueden gestionar su progreso en lugares" ON "public"."lu
 
 CREATE POLICY "Usuarios pueden gestionar su progreso en equipaje" ON "public"."equipaje_progreso"
     FOR ALL USING (auth.uid() = user_id);
+
+-- 7. Equipaje: Cada usuario ve sus propios items o los globales
+ALTER TABLE "public"."equipaje" ADD COLUMN IF NOT EXISTS "user_id" "uuid" REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+ALTER TABLE "public"."equipaje" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Usuarios pueden ver items de equipaje propios o compartidos" ON "public"."equipaje"
+    FOR SELECT USING (auth.uid() = user_id OR user_id IS NULL);
+
+CREATE POLICY "Usuarios pueden crear sus propios items de equipaje" ON "public"."equipaje"
+    FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Usuarios pueden editar/borrar sus propios items de equipaje" ON "public"."equipaje"
+    FOR ALL USING (auth.uid() = user_id);

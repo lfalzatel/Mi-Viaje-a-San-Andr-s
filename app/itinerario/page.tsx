@@ -387,17 +387,6 @@ export default function ItinerarioPage() {
           </div>
         </div>
 
-        {/* Botón agregar */}
-        {isAdmin && (
-          <button
-            onClick={() => setShowForm(true)}
-            className="w-full bg-white rounded-2xl p-4 shadow-tropical mb-6 flex items-center justify-center text-caribbean-600 hover:text-caribbean-700 font-bold transition-all hover:scale-[1.02] border-2 border-caribbean-100"
-          >
-            <Plus size={24} className="mr-2" />
-            Agregar actividad
-          </button>
-        )}
-
         {/* Lista de eventos */}
         {loading ? (
           <div className="text-center py-20">
@@ -501,19 +490,21 @@ export default function ItinerarioPage() {
         )}
       </div>
 
-      {/* Botón Flotante (FAB) Premium */}
-      <div className="fixed bottom-24 right-6 z-50 flex flex-col items-end gap-3 pointer-events-none">
-        <button
-          onClick={() => setShowForm(true)}
-          className="pointer-events-auto p-4 bg-gradient-to-br from-coral-500 to-coral-600 text-white rounded-full shadow-[0_8px_25px_rgba(244,114,182,0.4)] hover:shadow-[0_12px_35px_rgba(244,114,182,0.5)] transition-all transform hover:scale-110 active:scale-90 group relative"
-          title="Agregar Actividad"
-        >
-          <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-caribbean-900/80 backdrop-blur-md text-white px-3 py-1.5 rounded-xl text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-            Agregar Actividad
-          </div>
-          <Plus size={28} className="transition-transform group-hover:rotate-90 duration-300" />
-        </button>
-      </div>
+      {/* Botón Flotante (FAB) Premium - Solo para Admins */}
+      {isAdmin && (
+        <div className="fixed bottom-24 right-6 z-50 flex flex-col items-end gap-3 pointer-events-none">
+          <button
+            onClick={() => setShowForm(true)}
+            className="pointer-events-auto p-4 bg-gradient-to-br from-caribbean-500 to-caribbean-600 text-white rounded-full shadow-[0_8px_25px_rgba(0,146,214,0.4)] hover:shadow-[0_12px_35px_rgba(0,146,214,0.5)] transition-all transform hover:scale-110 active:scale-90 group relative"
+            title="Agregar Actividad"
+          >
+            <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-caribbean-900/80 backdrop-blur-md text-white px-3 py-1.5 rounded-xl text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              Agregar Actividad
+            </div>
+            <Plus size={28} className="transition-transform group-hover:rotate-90 duration-300" />
+          </button>
+        </div>
+      )}
 
       <style jsx>{`
         @keyframes scaleIn {
