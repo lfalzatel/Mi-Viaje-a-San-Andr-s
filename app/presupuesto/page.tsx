@@ -545,8 +545,8 @@ export default function PresupuestoPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-start gap-4 mb-1">
                       <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-1.5 mb-1">
-                          <h3 className="font-display font-bold text-gray-900 truncate text-base">
+                        <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                          <h3 className="font-display font-medium text-gray-900 group-hover:text-coral-700 transition-colors text-base leading-tight break-words">
                             {gasto.descripcion}
                           </h3>
                           {gasto.esOpcional && (
@@ -555,14 +555,17 @@ export default function PresupuestoPage() {
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
-                          <span>{cat.label}</span>
-                          <span className="mx-2 font-normal text-gray-300">•</span>
-                          <span>{new Date(gasto.fecha + 'T00:00:00').toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</span>
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider">
+                            {cat.label}
+                          </span>
+                          <span className="text-[10px] font-bold text-gray-400/80 uppercase">
+                            {new Date(gasto.fecha + 'T00:00:00').toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}
+                          </span>
                         </div>
                       </div>
                       <div className="text-right flex-shrink-0">
-                        <p className="font-display font-bold text-coral-600 whitespace-nowrap text-lg">
+                        <p className="font-display font-black text-coral-600 whitespace-nowrap text-lg">
                           {formatearMoneda(gasto.monto)}
                         </p>
                         {subTab === 'grupal' && (
@@ -575,14 +578,7 @@ export default function PresupuestoPage() {
                   </div>
 
                   {/* Acciones y Estado */}
-                  <div className="flex items-center gap-2">
-                    {(!gasto.esItinerario || gasto.completado) && (
-                      <div className="flex items-center gap-1 bg-green-50 text-green-600 text-[8px] font-black px-2 py-1 rounded-lg border border-green-100 uppercase tracking-tighter">
-                        <CheckCircle2 size={10} />
-                        Real
-                      </div>
-                    )}
-
+                  <div className="flex flex-col items-end gap-1.5 shrink-0 min-w-[70px]">
                     {!gasto.esItinerario ? (
                       isAdmin && (
                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -603,6 +599,13 @@ export default function PresupuestoPage() {
                     ) : (
                       <div className="bg-coral-50 text-coral-500 text-[8px] font-black px-2 py-1 rounded-lg border border-coral-100 whitespace-nowrap uppercase tracking-tighter cursor-default">
                         Itinerario
+                      </div>
+                    )}
+
+                    {(!gasto.esItinerario || gasto.completado) && (
+                      <div className="flex items-center gap-1 bg-green-50 text-green-600 text-[8px] font-black px-2 py-1 rounded-lg border border-green-100 uppercase tracking-tighter">
+                        <CheckCircle2 size={10} />
+                        Real
                       </div>
                     )}
                   </div>
