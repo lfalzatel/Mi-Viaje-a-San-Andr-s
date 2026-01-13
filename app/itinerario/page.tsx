@@ -199,25 +199,36 @@ export default function ItinerarioPage() {
 
   return (
     <main className="min-h-screen">
-      {/* Header */}
-      <div className="bg-gradient-to-br from-caribbean-400 to-caribbean-600 pt-12 pb-24 px-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-4 opacity-10">
-          <Calendar size={120} />
+      {/* Header Premium con diseño inmersivo */}
+      <div className="bg-[#0092d6] pt-16 pb-32 px-6 relative overflow-visible">
+        <div className="max-w-4xl mx-auto relative">
+          <Link href="/" className="inline-flex items-center text-white/80 mb-8 hover:text-white transition-all group relative z-10">
+            <div className="p-2 bg-white/10 rounded-full mr-3 group-hover:bg-white/20 transition-all">
+              <ArrowLeft size={18} />
+            </div>
+            <span className="font-bold tracking-tight">Regresar</span>
+          </Link>
+
+          <div className="relative z-10 animate-slide-up">
+            <div className="flex items-center gap-4 mb-3">
+              <div className="p-3 bg-white/20 backdrop-blur-md rounded-2xl shadow-inner border border-white/30">
+                <Calendar size={32} className="text-white" />
+              </div>
+              <div>
+                <h1 className="font-display text-5xl font-black text-white tracking-tighter italic leading-none">
+                  Itinerario
+                </h1>
+                <p className="text-caribbean-50/80 font-medium tracking-tight mt-1">
+                  Planifica tu aventura día a día
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <Link href="/" className="inline-flex items-center text-white mb-6 hover:text-caribbean-100 transition-colors relative z-10">
-          <ArrowLeft size={20} className="mr-2" />
-          Inicio
-        </Link>
-
-        <div className="relative z-10">
-          <h1 className="font-display text-4xl font-bold text-white mb-2">
-            Itinerario
-          </h1>
-          <p className="text-caribbean-100 font-body">
-            Planifica tu aventura día a día
-          </p>
-        </div>
+        {/* Elemento decorativo de fondo */}
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-caribbean-400/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-coral-400/20 rounded-full blur-3xl pointer-events-none" />
       </div>
 
       {/* Modal Formulario (Fuera del z-index container) */}
@@ -488,6 +499,20 @@ export default function ItinerarioPage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Botón Flotante (FAB) Premium */}
+      <div className="fixed bottom-24 right-6 z-50 flex flex-col items-end gap-3 pointer-events-none">
+        <button
+          onClick={() => setShowForm(true)}
+          className="pointer-events-auto p-4 bg-gradient-to-br from-coral-500 to-coral-600 text-white rounded-full shadow-[0_8px_25px_rgba(244,114,182,0.4)] hover:shadow-[0_12px_35px_rgba(244,114,182,0.5)] transition-all transform hover:scale-110 active:scale-90 group relative"
+          title="Agregar Actividad"
+        >
+          <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-caribbean-900/80 backdrop-blur-md text-white px-3 py-1.5 rounded-xl text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Agregar Actividad
+          </div>
+          <Plus size={28} className="transition-transform group-hover:rotate-90 duration-300" />
+        </button>
       </div>
 
       <style jsx>{`
