@@ -33,7 +33,7 @@ export default function PresupuestoPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [subTab, setSubTab] = useState<'personal' | 'grupal'>('personal')
   const [numPersonas, setNumPersonas] = useState(4)
-  const [presupuestoTotal] = useState(3000000)
+  const [presupuestoTotal] = useState(2000000)
 
   const [formData, setFormData] = useState({
     categoria: 'otro',

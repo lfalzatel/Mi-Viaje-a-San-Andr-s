@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { AuthProvider, useAuth } from '@/lib/auth-context'
 import './globals.css'
 import Link from 'next/link'
 import { Calendar, DollarSign, MapPin, Package } from 'lucide-react'
