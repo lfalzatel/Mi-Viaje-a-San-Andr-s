@@ -1,0 +1,118 @@
+[
+  {
+    "titulo": "OPCIÓN B – NO BUCEADORES",
+    "precio": 7000
+  },
+  {
+    "titulo": "Vuelta a la isla en mulita (opcional)",
+    "precio": 30000
+  },
+  {
+    "titulo": "Traslado al aeropuerto (opcional)",
+    "precio": 5000
+  },
+  {
+    "titulo": "OPCIÓN C – NO BUCEADORES",
+    "precio": 7000
+  },
+  {
+    "titulo": "Traslado al centro",
+    "precio": 7000
+  },
+  {
+    "titulo": "Atardecer en West View",
+    "precio": 7000
+  },
+  {
+    "titulo": "Cena en La Regatta (opcional)",
+    "precio": 80000
+  },
+  {
+    "titulo": "Traslado al aeropuerto",
+    "precio": 7000
+  },
+  {
+    "titulo": "Vuelo de regreso",
+    "precio": 193040
+  },
+  {
+    "titulo": "Llegada a San Andrés",
+    "precio": 192640
+  },
+  {
+    "titulo": "Tarjeta de turismo",
+    "precio": 137000
+  },
+  {
+    "titulo": "Tralado a West View o Playa San Luis",
+    "precio": 7000
+  },
+  {
+    "titulo": "Traslado al hotel",
+    "precio": 7000
+  },
+  {
+    "titulo": "OPCIÓN A - Buceo recreativo (Opcional)",
+    "precio": 120000
+  },
+  {
+    "titulo": "Tour Johnny Cay + Acuario + manglares",
+    "precio": 70000
+  },
+  {
+    "titulo": "Traslado al muelle (o Caminando)",
+    "precio": 5000
+  },
+  {
+    "titulo": "Cena libre",
+    "precio": 25000
+  },
+  {
+    "titulo": "Almuerzo en Johnny Cay (opcional)",
+    "precio": 45000
+  },
+  {
+    "titulo": "Almuerzo libre",
+    "precio": 30000
+  },
+  {
+    "titulo": "Desayuno en el hotel",
+    "precio": 0
+  },
+  {
+    "titulo": "Impuesto muelle",
+    "precio": 2000
+  },
+  {
+    "titulo": "Almuerzo económico",
+    "precio": 30000
+  },
+  {
+    "titulo": "Playa Spratt Bight",
+    "precio": 1
+  },
+  {
+    "titulo": "Impuesto ecológico Johnny Cay",
+    "precio": 15000
+  },
+  {
+    "titulo": "Traslado a Rionegro",
+    "precio": 5000
+  },
+  {
+    "titulo": "Desayuno",
+    "precio": 0
+  },
+  {
+    "titulo": "Desayuno ",
+    "precio": 0
+  },
+  {
+    "titulo": "Pago de parqueadero",
+    "precio": 40000
+  },
+  {
+    "titulo": "Compras de souvenirs",
+    "precio": 0
+  }
+]

@@ -70,7 +70,7 @@ export default function PresupuestoPage() {
         const titulo = item.titulo.toLowerCase()
         const desc = (item.descripcion || '').toLowerCase()
 
-        if (titulo.includes('vuelo') || titulo.includes('traslado') || titulo.includes('bus') || titulo.includes('taxi') || titulo.includes('transporte')) {
+        if (titulo.includes('vuelo') || titulo.includes('traslado') || titulo.includes('bus') || titulo.includes('taxi') || titulo.includes('transporte') || titulo.includes('avión') || titulo.includes('llegada')) {
           categoria = 'transporte'
         } else if (titulo.includes('hotel') || titulo.includes('alojamiento') || titulo.includes('reserva') || desc.includes('hotel')) {
           categoria = 'alojamiento'
@@ -92,6 +92,22 @@ export default function PresupuestoPage() {
           esOpcional: titulo.includes('(opcional)') || desc.includes('(opcional)')
         }
       })
+
+      // Verificar si hay alojamiento pago en el itinerario
+      const tieneAlojamientoPago = gastosItinerario.some(g => g.categoria === 'alojamiento' && g.monto > 0)
+      if (!tieneAlojamientoPago) {
+        // Si no hay, agregar el estimado de 50k/día (4 días = 200k)
+        gastosItinerario.push({
+          id: 'temp-alojamiento',
+          categoria: 'alojamiento',
+          monto: 200000,
+          descripcion: 'Alojamiento Estimado (50k/día)',
+          fecha: '2026-03-30',
+          tipo: 'personal',
+          esItinerario: true,
+          esOpcional: false
+        })
+      }
 
       // Combinar y ordenar cronológicamente
       const todosLosGastos = [...(gastosData || []), ...gastosItinerario]
@@ -355,14 +371,14 @@ export default function PresupuestoPage() {
               </p>
               <div className="flex flex-col gap-1">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-sm font-bold text-gray-400">Total:</span>
+                  <span className="text-xs font-bold text-gray-400 uppercase tracking-tighter">Proyectado:</span>
                   <p className="font-display text-2xl font-bold text-coral-700">
                     {formatearMoneda(totalGastado)}
                   </p>
                 </div>
                 {subTab === 'personal' && totalGastado !== totalObligatorio && (
                   <div className="flex items-baseline gap-2">
-                    <span className="text-[10px] font-black text-caribbean-500 uppercase">Obligatorio:</span>
+                    <span className="text-[10px] font-black text-caribbean-500 uppercase tracking-tighter">Mínimo Obligatorio:</span>
                     <p className="font-display text-lg font-bold text-caribbean-700">
                       {formatearMoneda(totalObligatorio)}
                     </p>
@@ -380,8 +396,8 @@ export default function PresupuestoPage() {
             )}
             {subTab === 'personal' && (
               <div className="text-right">
-                <p className="text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">Caja</p>
-                <p className={`font-display text-3xl font-bold ${disponible < 0 ? 'text-red-600' : 'text-caribbean-700'}`}>
+                <p className="text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">Presupuesto Libre</p>
+                <p className={`font-display text-2xl font-bold ${disponible < 0 ? 'text-red-600' : 'text-caribbean-700'}`}>
                   {formatearMoneda(disponible)}
                 </p>
               </div>
