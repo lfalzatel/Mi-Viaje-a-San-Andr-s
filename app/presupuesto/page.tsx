@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Plus, DollarSign, Trash2, TrendingUp, Edit2, X, Wallet, Users, User } from 'lucide-react'
+import { ArrowLeft, Plus, DollarSign, Trash2, TrendingUp, Edit2, X, Wallet, Users, User, Calendar } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
 type Gasto = {
@@ -12,6 +12,7 @@ type Gasto = {
   descripcion: string
   fecha: string
   tipo: string
+  esItinerario?: boolean
 }
 
 const categorias = [
@@ -45,15 +46,56 @@ export default function PresupuestoPage() {
 
   const cargarGastos = async () => {
     try {
-      const { data, error } = await supabase
+      // Cargar gastos manuales
+      const { data: gastosData, error: gastosError } = await supabase
         .from('gastos')
         .select('*')
         .order('fecha', { ascending: false })
 
-      if (error) throw error
-      setGastos(data || [])
+      if (gastosError) throw gastosError
+
+      // Cargar items del itinerario con precio
+      const { data: itinerarioData, error: itinerarioError } = await supabase
+        .from('itinerario')
+        .select('*')
+        .gt('precio', 0)
+
+      if (itinerarioError) throw itinerarioError
+
+      // Mapear items del itinerario a formato Gasto
+      const gastosItinerario: Gasto[] = (itinerarioData || []).map(item => {
+        let categoria = 'actividades'
+        const titulo = item.titulo.toLowerCase()
+        const desc = (item.descripcion || '').toLowerCase()
+
+        if (titulo.includes('vuelo') || titulo.includes('traslado') || titulo.includes('bus') || titulo.includes('taxi') || titulo.includes('transporte')) {
+          categoria = 'transporte'
+        } else if (titulo.includes('hotel') || titulo.includes('alojamiento') || titulo.includes('reserva') || desc.includes('hotel')) {
+          categoria = 'alojamiento'
+        } else if (titulo.includes('cena') || titulo.includes('almuerzo') || titulo.includes('desayuno') || titulo.includes('comida') || titulo.includes('restaurante')) {
+          categoria = 'comida'
+        } else if (titulo.includes('souvenir') || titulo.includes('compras') || titulo.includes('regalo')) {
+          categoria = 'compras'
+        }
+
+        return {
+          id: item.id,
+          categoria,
+          monto: item.precio,
+          descripcion: item.titulo,
+          fecha: item.fecha,
+          tipo: 'personal', // Siempre personal por ahora
+          esItinerario: true
+        }
+      })
+
+      // Combinar y ordenar
+      const todosLosGastos = [...(gastosData || []), ...gastosItinerario]
+        .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
+
+      setGastos(todosLosGastos)
     } catch (error) {
-      console.error('Error cargando gastos:', error)
+      console.error('Error cargando datos financieros:', error)
     } finally {
       setLoading(false)
     }
@@ -425,8 +467,13 @@ export default function PresupuestoPage() {
                   className="bg-white rounded-3xl p-5 shadow-tropical border-2 border-transparent hover:border-coral-100 transition-all animate-slide-up group flex items-center gap-4"
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
-                  <div className={`w-12 h-12 rounded-2xl ${cat.color} flex items-center justify-center text-white shadow-lg flex-shrink-0`}>
+                  <div className={`w-12 h-12 rounded-2xl ${cat.color} flex items-center justify-center text-white shadow-lg flex-shrink-0 relative`}>
                     <span className="text-xl">{cat.icon}</span>
+                    {gasto.esItinerario && (
+                      <div className="absolute -top-1 -right-1 bg-white rounded-full p-1 shadow-sm border border-coral-200">
+                        <Calendar size={10} className="text-coral-500" />
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -453,24 +500,38 @@ export default function PresupuestoPage() {
                   </div>
 
                   {/* Acciones */}
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => handleOpenEdit(gasto)}
-                      className="p-2 text-coral-300 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all"
-                    >
-                      <Edit2 size={16} />
-                    </button>
-                    <button
-                      onClick={() => eliminarGasto(gasto.id)}
-                      className="p-2 text-gray-300 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
+                  {!gasto.esItinerario ? (
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => handleOpenEdit(gasto)}
+                        className="p-2 text-coral-300 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={() => eliminarGasto(gasto.id)}
+                        className="p-2 text-gray-300 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="bg-coral-50 text-coral-500 text-[8px] font-black px-2 py-1 rounded-lg border border-coral-100 whitespace-nowrap uppercase tracking-tighter">
+                        Itinerario
+                      </div>
+                    </div>
+                  )}
                 </div>
               )
             })}
           </div>
+        )}
+
+        {subTab === 'personal' && (
+          <p className="mt-8 text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest px-10">
+            * Los precios del itinerario se sincronizan automáticamente aquí. Edítalos en la pestaña de itinerario.
+          </p>
         )}
       </div>
 
