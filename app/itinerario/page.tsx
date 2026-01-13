@@ -334,41 +334,48 @@ export default function ItinerarioPage() {
         </div>
       )}
 
-      <div className="px-6 -mt-16 max-w-4xl mx-auto relative z-20">
-        {/* Progreso y Gasto */}
-        <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 shadow-tropical mb-6 sticky top-0 z-30 border border-caribbean-50">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">Tu Aventura</p>
-              <p className="font-display text-3xl font-bold text-caribbean-800">
-                {actividadesCompletadas} <span className="text-sm font-medium text-gray-400 italic">de {totalActividades} planes</span>
-              </p>
+      <div className="px-4 sm:px-6 -mt-16 max-w-4xl mx-auto relative z-20">
+        {/* Dashboard Flotante de Progreso */}
+        <div className="sticky top-4 z-40 mb-8">
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-5 sm:p-6 shadow-2xl border border-white/50 animate-scale-in">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-[10px] font-black text-caribbean-500 uppercase tracking-[0.2em] mb-1">Tu Aventura</p>
+                <div className="flex items-baseline gap-1">
+                  <span className="font-display text-3xl font-black text-caribbean-900">{actividadesCompletadas}</span>
+                  <span className="text-sm font-bold text-caribbean-400">/ {totalActividades}</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-[10px] font-black text-coral-500 uppercase tracking-[0.2em] mb-1">Presupuesto</p>
+                <p className="font-display text-2xl font-black text-coral-600">
+                  {formatearMoneda(gastoAcumulado)}
+                </p>
+              </div>
             </div>
-            <div className="text-right">
-              <p className="text-[10px] font-bold text-coral-500 uppercase tracking-widest mb-1">Gasto Acumulado</p>
-              <p className="font-display text-2xl font-black text-coral-600">
-                {formatearMoneda(gastoAcumulado)}
-              </p>
+
+            <div className="relative">
+              <div className="h-3 bg-caribbean-100/50 rounded-full overflow-hidden p-0.5">
+                <div
+                  className="h-full bg-gradient-to-r from-caribbean-400 to-caribbean-600 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(0,160,230,0.3)]"
+                  style={{ width: `${(actividadesCompletadas / totalActividades) * 100}%` }}
+                />
+              </div>
+              <div className="flex justify-between items-center mt-2">
+                <span className="text-[10px] font-black text-caribbean-500 uppercase">Progreso</span>
+                <span className="text-[10px] font-black text-caribbean-600 bg-caribbean-50 px-2 py-0.5 rounded-md">
+                  {((actividadesCompletadas / totalActividades) * 100).toFixed(0)}% COMPLETADO
+                </span>
+              </div>
             </div>
           </div>
-          <div className="h-4 bg-gray-100 rounded-full overflow-hidden border border-gray-100 p-0.5">
-            <div
-              className={`h-full rounded-full transition-all duration-1000 ${porcentajeCompletado === 100 ? 'bg-gradient-to-r from-green-400 to-green-500' : 'bg-gradient-to-r from-caribbean-400 to-caribbean-600'
-                }`}
-              style={{ width: `${porcentajeCompletado}%` }}
-            />
-          </div>
-          <div className="flex justify-between items-center mt-2">
-            <p className="text-[10px] font-bold text-caribbean-600 uppercase">
-              {porcentajeCompletado.toFixed(0)}% Completado
-            </p>
-            {porcentajeCompletado === 100 && (
+        </div>
+    {porcentajeCompletado === 100 && (
               <p className="text-[10px] font-black text-green-500 uppercase animate-bounce">
                 ¡Viaje completado! 🎉
               </p>
             )}
           </div>
-        </div>
 
         {/* Botón agregar */}
         {isAdmin && (
@@ -491,6 +498,6 @@ export default function ItinerarioPage() {
         }
         .animate-scale-in { animation: scaleIn 0.2s ease-out forwards; }
       `}</style>
-    </main>
+    </main >
   )
 }
