@@ -28,7 +28,7 @@ export default function LugaresPage() {
   const [lugares, setLugares] = useState<Lugar[]>([])
   const [progreso, setProgreso] = useState<Record<string, boolean>>({})
   const [loading, setLoading] = useState(true)
-  const { user, role } = useAuth()
+  const { user, role, isLoading: authLoading } = useAuth()
   const isAdmin = role === 'admin'
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -42,11 +42,17 @@ export default function LugaresPage() {
   })
 
   useEffect(() => {
-    cargarLugares()
-  }, [])
+    if (!authLoading) {
+      cargarLugares()
+    }
+  }, [user, authLoading])
 
   const cargarLugares = async () => {
-    if (!user) return
+    if (!user) {
+      setLoading(false)
+      return
+    }
+    setLoading(true)
     try {
       // 1. Cargar el catálogo maestro de lugares
       const { data: dataLugares, error: errorLugares } = await supabase

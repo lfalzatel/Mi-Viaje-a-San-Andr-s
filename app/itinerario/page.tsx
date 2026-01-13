@@ -21,7 +21,7 @@ export default function ItinerarioPage() {
   const [eventos, setEventos] = useState<Evento[]>([])
   const [progreso, setProgreso] = useState<Record<string, boolean>>({})
   const [loading, setLoading] = useState(true)
-  const { user, role } = useAuth()
+  const { user, role, isLoading: authLoading } = useAuth()
   const isAdmin = role === 'admin'
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -36,11 +36,17 @@ export default function ItinerarioPage() {
   })
 
   useEffect(() => {
-    cargarEventos()
-  }, [])
+    if (!authLoading) {
+      cargarEventos()
+    }
+  }, [user, authLoading])
 
   const cargarEventos = async () => {
-    if (!user) return
+    if (!user) {
+      setLoading(false)
+      return
+    }
+    setLoading(true)
     try {
       // 1. Cargar el plan maestro
       const { data: dataItinerario, error: errorItinerario } = await supabase
@@ -330,7 +336,7 @@ export default function ItinerarioPage() {
 
       <div className="px-6 -mt-16 max-w-4xl mx-auto relative z-20">
         {/* Progreso y Gasto */}
-        <div className="bg-white rounded-3xl p-6 shadow-tropical mb-6 sticky top-4 z-30 border border-caribbean-50">
+        <div className="bg-white rounded-3xl p-6 shadow-tropical mb-6 sticky top-20 z-30 border border-caribbean-50">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">Tu Aventura</p>
@@ -412,7 +418,7 @@ export default function ItinerarioPage() {
 
                   <div className="flex-1">
                     <div className="flex justify-between items-start gap-4 mb-2">
-                      <h3 className={`font-display text-lg sm:text-xl font-bold transition-all leading-tight ${progreso[evento.id] ? 'text-gray-400 line-through' : 'text-caribbean-900'
+                      <h3 className={`font-display text-lg sm:text-xl font-bold transition-all leading-tight bg-white ${progreso[evento.id] ? 'text-gray-400 line-through' : 'text-caribbean-900'
                         }`}>
                         {evento.titulo}
                       </h3>

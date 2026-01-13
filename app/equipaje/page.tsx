@@ -38,7 +38,7 @@ export default function EquipajePage() {
   const [items, setItems] = useState<ItemEquipaje[]>([])
   const [progreso, setProgreso] = useState<Record<string, boolean>>({})
   const [loading, setLoading] = useState(true)
-  const { user, role } = useAuth()
+  const { user, role, isLoading: authLoading } = useAuth()
   const isAdmin = role === 'admin'
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -52,11 +52,17 @@ export default function EquipajePage() {
   })
 
   useEffect(() => {
-    cargarItems()
-  }, [])
+    if (!authLoading) {
+      cargarItems()
+    }
+  }, [user, authLoading])
 
   const cargarItems = async () => {
-    if (!user) return
+    if (!user) {
+      setLoading(false)
+      return
+    }
+    setLoading(true)
     try {
       // 1. Cargar inventario maestro
       const { data: dataItems, error: errorItems } = await supabase

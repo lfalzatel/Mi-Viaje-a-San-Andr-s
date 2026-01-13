@@ -34,7 +34,7 @@ export default function PresupuestoPage() {
   const [gastos, setGastos] = useState<Gasto[]>([])
   const [progreso, setProgreso] = useState<Record<string, boolean>>({})
   const [loading, setLoading] = useState(true)
-  const { user, role } = useAuth()
+  const { user, role, isLoading: authLoading } = useAuth()
   const isAdmin = role === 'admin'
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -50,11 +50,17 @@ export default function PresupuestoPage() {
   })
 
   useEffect(() => {
-    cargarGastos()
-  }, [])
+    if (!authLoading) {
+      cargarGastos()
+    }
+  }, [user, authLoading])
 
   const cargarGastos = async () => {
-    if (!user) return
+    if (!user) {
+      setLoading(false)
+      return
+    }
+    setLoading(true)
     try {
       // 1. Cargar gastos manuales (propios o antiguos sin id)
       const { data: gastosData, error: gastosError } = await supabase
@@ -515,7 +521,7 @@ export default function PresupuestoPage() {
         )}
 
         {/* Botón agregar */}
-        {isAdmin && (
+        {(isAdmin || subTab === 'personal') && (
           <button
             onClick={() => setShowForm(true)}
             className="w-full bg-white rounded-2xl p-4 shadow-tropical mb-6 flex items-center justify-center text-coral-600 hover:text-coral-700 font-bold transition-all hover:scale-[1.02] border-2 border-coral-50"
@@ -594,8 +600,12 @@ export default function PresupuestoPage() {
                       )}
                     </div>
 
-                    {!gasto.esItinerario ? (
-                      isAdmin && (
+                    {gasto.esItinerario ? (
+                      <div className="bg-coral-50 text-coral-500 text-[8px] font-black px-2 py-1 rounded-lg border border-coral-100 whitespace-nowrap uppercase tracking-tighter cursor-default">
+                        Itinerario
+                      </div>
+                    ) : (
+                      (isAdmin || gasto.user_id === user?.id) && (
                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={() => handleOpenEdit(gasto)}
@@ -611,10 +621,6 @@ export default function PresupuestoPage() {
                           </button>
                         </div>
                       )
-                    ) : (
-                      <div className="bg-coral-50 text-coral-500 text-[8px] font-black px-2 py-1 rounded-lg border border-coral-100 whitespace-nowrap uppercase tracking-tighter cursor-default">
-                        Itinerario
-                      </div>
                     )}
 
                     {(!gasto.esItinerario || progreso[gasto.id]) && (
