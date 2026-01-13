@@ -418,7 +418,7 @@ export default function ItinerarioPage() {
 
                   <div className="flex-1">
                     <div className="flex justify-between items-start gap-4 mb-2">
-                      <h3 className={`font-display text-lg sm:text-xl font-bold transition-all leading-tight bg-white ${progreso[evento.id] ? 'text-gray-400 line-through' : 'text-caribbean-900'
+                      <h3 className={`font-display text-lg sm:text-xl font-bold transition-all leading-tight ${progreso[evento.id] ? 'text-gray-400 line-through decoration-1' : 'text-caribbean-900'
                         }`}>
                         {evento.titulo}
                       </h3>
