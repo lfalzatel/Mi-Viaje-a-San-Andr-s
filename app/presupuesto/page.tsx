@@ -14,6 +14,7 @@ type Gasto = {
   tipo: string
   hora?: string
   esItinerario?: boolean
+  esOpcional?: boolean
 }
 
 const categorias = [
@@ -87,7 +88,8 @@ export default function PresupuestoPage() {
           fecha: item.fecha,
           hora: item.hora,
           tipo: 'personal',
-          esItinerario: true
+          esItinerario: true,
+          esOpcional: titulo.includes('(opcional)') || desc.includes('(opcional)')
         }
       })
 
@@ -181,8 +183,12 @@ export default function PresupuestoPage() {
     }
   }
 
-  const gastosFiltrados = gastos.filter(g => (g.tipo || 'personal') === subTab)
+  const gastosFiltrados = (gastos || []).filter(g => (g.tipo || 'personal') === subTab)
   const totalGastado = gastosFiltrados.reduce((sum, gasto) => sum + gasto.monto, 0)
+  const totalObligatorio = gastosFiltrados
+    .filter(g => !g.esOpcional)
+    .reduce((sum, gasto) => sum + gasto.monto, 0)
+
   const porcentajeGastado = (totalGastado / presupuestoTotal) * 100
   const disponible = presupuestoTotal - totalGastado
 
@@ -343,13 +349,26 @@ export default function PresupuestoPage() {
         {/* Resumen del presupuesto */}
         <div className="bg-white rounded-3xl p-6 shadow-tropical mb-6">
           <div className="flex items-center justify-between mb-4">
-            <div>
+            <div className="flex-1">
               <p className="text-xs font-bold text-coral-500 uppercase tracking-wider mb-1">
-                {subTab === 'personal' ? 'Total Gastado' : 'Total Grupo'}
+                {subTab === 'personal' ? 'Resumen de Gastos' : 'Total Grupo'}
               </p>
-              <p className="font-display text-3xl font-bold text-coral-700">
-                {formatearMoneda(totalGastado)}
-              </p>
+              <div className="flex flex-col gap-1">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-sm font-bold text-gray-400">Total:</span>
+                  <p className="font-display text-2xl font-bold text-coral-700">
+                    {formatearMoneda(totalGastado)}
+                  </p>
+                </div>
+                {subTab === 'personal' && totalGastado !== totalObligatorio && (
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-[10px] font-black text-caribbean-500 uppercase">Obligatorio:</span>
+                    <p className="font-display text-lg font-bold text-caribbean-700">
+                      {formatearMoneda(totalObligatorio)}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
             {subTab === 'grupal' && (
               <div className="text-right">
@@ -490,9 +509,16 @@ export default function PresupuestoPage() {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-start mb-0.5">
-                      <h3 className="font-display font-bold text-gray-900 truncate pr-2">
-                        {gasto.descripcion}
-                      </h3>
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <h3 className="font-display font-bold text-gray-900 truncate max-w-[200px]">
+                          {gasto.descripcion}
+                        </h3>
+                        {gasto.esOpcional && (
+                          <span className="bg-caribbean-50 text-caribbean-600 text-[8px] font-black px-1.5 py-0.5 rounded-full border border-caribbean-100 uppercase tracking-tighter shrink-0">
+                            Opcional
+                          </span>
+                        )}
+                      </div>
                       <div className="text-right">
                         <p className="font-display font-bold text-coral-600 whitespace-nowrap">
                           {formatearMoneda(gasto.monto)}
