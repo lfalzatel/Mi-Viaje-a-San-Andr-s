@@ -543,56 +543,53 @@ export default function PresupuestoPage() {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start gap-4 mb-1">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
-                          <h3 className="font-display font-medium text-gray-900 group-hover:text-coral-700 transition-colors text-base leading-tight break-words">
-                            {gasto.descripcion}
-                          </h3>
-                          {gasto.esOpcional && (
-                            <span className="bg-caribbean-50 text-caribbean-600 text-[8px] font-black px-1.5 py-0.5 rounded-full border border-caribbean-100 uppercase tracking-tighter shrink-0">
-                              Opcional
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex flex-col gap-0.5">
-                          <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider">
-                            {cat.label}
-                          </span>
-                          <span className="text-[10px] font-bold text-gray-400/80 uppercase">
-                            {new Date(gasto.fecha + 'T00:00:00').toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="text-right flex-shrink-0">
-                        <p className="font-display font-black text-coral-600 whitespace-nowrap text-lg">
-                          {formatearMoneda(gasto.monto)}
-                        </p>
-                        {subTab === 'grupal' && (
-                          <p className="text-[10px] font-black text-caribbean-500">
-                            {formatearMoneda(gasto.monto / numPersonas)} pp
-                          </p>
-                        )}
-                      </div>
+                    <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                      <h3 className="font-display font-medium text-gray-900 group-hover:text-coral-700 transition-colors text-base leading-tight break-words">
+                        {gasto.descripcion}
+                      </h3>
+                      {gasto.esOpcional && (
+                        <span className="bg-caribbean-50 text-caribbean-600 text-[8px] font-black px-1.5 py-0.5 rounded-full border border-caribbean-100 uppercase tracking-tighter shrink-0">
+                          Opcional
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider">
+                        {cat.label}
+                      </span>
+                      <span className="text-[10px] font-bold text-gray-400/80 uppercase">
+                        {new Date(gasto.fecha + 'T00:00:00').toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short' })}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Acciones y Estado */}
-                  <div className="flex flex-col items-end gap-1.5 shrink-0 min-w-[70px]">
+                  {/* Acciones, Precio y Estado */}
+                  <div className="flex flex-col items-end gap-1.5 shrink-0 min-w-[100px]">
+                    <div className="text-right flex-shrink-0 mb-1">
+                      <p className="font-display font-black text-coral-600 whitespace-nowrap text-lg leading-none">
+                        {formatearMoneda(gasto.monto)}
+                      </p>
+                      {subTab === 'grupal' && (
+                        <p className="text-[10px] font-black text-caribbean-500 mt-1">
+                          {formatearMoneda(gasto.monto / numPersonas)} pp
+                        </p>
+                      )}
+                    </div>
+
                     {!gasto.esItinerario ? (
                       isAdmin && (
                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={() => handleOpenEdit(gasto)}
-                            className="p-2 text-coral-300 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all"
+                            className="p-1.5 text-coral-300 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all"
                           >
-                            <Edit2 size={16} />
+                            <Edit2 size={14} />
                           </button>
                           <button
                             onClick={() => eliminarGasto(gasto.id)}
-                            className="p-2 text-gray-300 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all"
+                            className="p-1.5 text-gray-300 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all"
                           >
-                            <Trash2 size={16} />
+                            <Trash2 size={14} />
                           </button>
                         </div>
                       )
