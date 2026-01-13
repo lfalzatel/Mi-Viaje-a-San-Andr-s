@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Package, Trash2, CheckCircle2, Circle, Edit2, X, Briefcase } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/lib/auth-context'
 
 type ItemEquipaje = {
   id: string
@@ -36,6 +37,8 @@ const itemsSugeridos = {
 export default function EquipajePage() {
   const [items, setItems] = useState<ItemEquipaje[]>([])
   const [loading, setLoading] = useState(true)
+  const { role } = useAuth()
+  const isAdmin = role === 'admin'
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false)
@@ -262,18 +265,20 @@ export default function EquipajePage() {
         </div>
 
         {/* Sugerencias Toggle */}
-        <button
-          onClick={() => setMostrarSugerencias(!mostrarSugerencias)}
-          className="w-full bg-caribbean-50/50 backdrop-blur-sm rounded-2xl p-4 mb-4 flex items-center justify-between text-caribbean-700 font-bold border border-caribbean-100 transition-all active:scale-95"
-        >
-          <div className="flex items-center gap-2">
-            <span className="text-xl">💡</span>
-            <span className="text-sm uppercase tracking-wider">Ideas para empacar</span>
-          </div>
-          <span className="text-xs text-caribbean-400">{mostrarSugerencias ? 'CERRAR' : 'VER'}</span>
-        </button>
+        {isAdmin && (
+          <button
+            onClick={() => setMostrarSugerencias(!mostrarSugerencias)}
+            className="w-full bg-caribbean-50/50 backdrop-blur-sm rounded-2xl p-4 mb-4 flex items-center justify-between text-caribbean-700 font-bold border border-caribbean-100 transition-all active:scale-95"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-xl">💡</span>
+              <span className="text-sm uppercase tracking-wider">Ideas para empacar</span>
+            </div>
+            <span className="text-xs text-caribbean-400">{mostrarSugerencias ? 'CERRAR' : 'VER'}</span>
+          </button>
+        )}
 
-        {mostrarSugerencias && (
+        {isAdmin && mostrarSugerencias && (
           <div className="bg-white rounded-3xl p-6 shadow-tropical mb-6 animate-scale-in border-2 border-caribbean-50">
             <div className="space-y-6">
               {Object.entries(itemsSugeridos).map(([catValue, sugerencias]) => {
@@ -341,13 +346,15 @@ export default function EquipajePage() {
         </div>
 
         {/* Botón agregar */}
-        <button
-          onClick={() => setShowForm(true)}
-          className="w-full bg-white rounded-2xl p-4 shadow-tropical mb-6 flex items-center justify-center text-caribbean-600 hover:text-caribbean-700 font-bold transition-all hover:scale-[1.02] border-2 border-caribbean-50"
-        >
-          <Plus size={24} className="mr-2" />
-          Nuevo ítem de equipaje
-        </button>
+        {isAdmin && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="w-full bg-white rounded-2xl p-4 shadow-tropical mb-6 flex items-center justify-center text-caribbean-600 hover:text-caribbean-700 font-bold transition-all hover:scale-[1.02] border-2 border-caribbean-50"
+          >
+            <Plus size={24} className="mr-2" />
+            Nuevo ítem de equipaje
+          </button>
+        )}
 
         {/* Lista de items */}
         {loading ? (
@@ -400,20 +407,22 @@ export default function EquipajePage() {
                     </div>
 
                     {/* Acciones */}
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
-                        onClick={() => handleOpenEdit(item)}
-                        className="p-2 text-caribbean-300 hover:text-caribbean-500 hover:bg-caribbean-50 rounded-xl transition-all"
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                      <button
-                        onClick={() => eliminarItem(item.id)}
-                        className="p-2 text-gray-300 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+                    {isAdmin && (
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => handleOpenEdit(item)}
+                          className="p-2 text-caribbean-300 hover:text-caribbean-500 hover:bg-caribbean-50 rounded-xl transition-all"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                        <button
+                          onClick={() => eliminarItem(item.id)}
+                          className="p-2 text-gray-300 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               )

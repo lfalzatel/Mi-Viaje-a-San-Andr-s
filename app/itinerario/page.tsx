@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Calendar, Clock, MapPin, Trash2, CheckCircle2, Circle, Edit2, X, DollarSign } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/lib/auth-context'
 
 type Evento = {
   id: string
@@ -19,6 +20,8 @@ type Evento = {
 export default function ItinerarioPage() {
   const [eventos, setEventos] = useState<Evento[]>([])
   const [loading, setLoading] = useState(true)
+  const { role } = useAuth()
+  const isAdmin = role === 'admin'
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [formData, setFormData] = useState({
@@ -291,13 +294,15 @@ export default function ItinerarioPage() {
 
       <div className="px-6 -mt-16 max-w-4xl mx-auto relative z-20">
         {/* Botón agregar */}
-        <button
-          onClick={() => setShowForm(true)}
-          className="w-full bg-white rounded-2xl p-4 shadow-tropical mb-6 flex items-center justify-center text-caribbean-600 hover:text-caribbean-700 font-bold transition-all hover:scale-[1.02] border-2 border-caribbean-100"
-        >
-          <Plus size={24} className="mr-2" />
-          Agregar actividad
-        </button>
+        {isAdmin && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="w-full bg-white rounded-2xl p-4 shadow-tropical mb-6 flex items-center justify-center text-caribbean-600 hover:text-caribbean-700 font-bold transition-all hover:scale-[1.02] border-2 border-caribbean-100"
+          >
+            <Plus size={24} className="mr-2" />
+            Agregar actividad
+          </button>
+        )}
 
         {/* Lista de eventos */}
         {loading ? (
@@ -375,22 +380,24 @@ export default function ItinerarioPage() {
                   </div>
 
                   {/* Acciones */}
-                  <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => handleOpenEdit(evento)}
-                      className="p-2 text-caribbean-400 hover:text-caribbean-600 hover:bg-caribbean-50 rounded-xl transition-all"
-                      title="Editar"
-                    >
-                      <Edit2 size={18} />
-                    </button>
-                    <button
-                      onClick={() => eliminarEvento(evento.id)}
-                      className="p-2 text-coral-300 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all"
-                      title="Eliminar"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
+                  {isAdmin && (
+                    <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => handleOpenEdit(evento)}
+                        className="p-2 text-caribbean-400 hover:text-caribbean-600 hover:bg-caribbean-50 rounded-xl transition-all"
+                        title="Editar"
+                      >
+                        <Edit2 size={18} />
+                      </button>
+                      <button
+                        onClick={() => eliminarEvento(evento.id)}
+                        className="p-2 text-coral-300 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all"
+                        title="Eliminar"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

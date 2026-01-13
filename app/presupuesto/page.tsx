@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, DollarSign, Trash2, TrendingUp, Edit2, X, Wallet, Users, User, Calendar } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/lib/auth-context'
 
 type Gasto = {
   id: string
@@ -29,6 +30,8 @@ const categorias = [
 export default function PresupuestoPage() {
   const [gastos, setGastos] = useState<Gasto[]>([])
   const [loading, setLoading] = useState(true)
+  const { role } = useAuth()
+  const isAdmin = role === 'admin'
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [subTab, setSubTab] = useState<'personal' | 'grupal'>('personal')
@@ -480,13 +483,15 @@ export default function PresupuestoPage() {
         )}
 
         {/* Botón agregar */}
-        <button
-          onClick={() => setShowForm(true)}
-          className="w-full bg-white rounded-2xl p-4 shadow-tropical mb-6 flex items-center justify-center text-coral-600 hover:text-coral-700 font-bold transition-all hover:scale-[1.02] border-2 border-coral-50"
-        >
-          <Plus size={24} className="mr-2" />
-          Registrar {subTab === 'personal' ? 'mi gasto' : 'gasto grupal'}
-        </button>
+        {isAdmin && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="w-full bg-white rounded-2xl p-4 shadow-tropical mb-6 flex items-center justify-center text-coral-600 hover:text-coral-700 font-bold transition-all hover:scale-[1.02] border-2 border-coral-50"
+          >
+            <Plus size={24} className="mr-2" />
+            Registrar {subTab === 'personal' ? 'mi gasto' : 'gasto grupal'}
+          </button>
+        )}
 
         {/* Lista de gastos */}
         {loading ? (
@@ -555,20 +560,22 @@ export default function PresupuestoPage() {
 
                   {/* Acciones */}
                   {!gasto.esItinerario ? (
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
-                        onClick={() => handleOpenEdit(gasto)}
-                        className="p-2 text-coral-300 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all"
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                      <button
-                        onClick={() => eliminarGasto(gasto.id)}
-                        className="p-2 text-gray-300 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+                    isAdmin && (
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => handleOpenEdit(gasto)}
+                          className="p-2 text-coral-300 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                        <button
+                          onClick={() => eliminarGasto(gasto.id)}
+                          className="p-2 text-gray-300 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    )
                   ) : (
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                       <div className="bg-coral-50 text-coral-500 text-[8px] font-black px-2 py-1 rounded-lg border border-coral-100 whitespace-nowrap uppercase tracking-tighter">

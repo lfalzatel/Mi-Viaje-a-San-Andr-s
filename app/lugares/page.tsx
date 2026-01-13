@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, MapPin, Trash2, CheckCircle2, Circle, Star, Edit2, X } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/lib/auth-context'
 
 type Lugar = {
   id: string
@@ -26,6 +27,8 @@ const categorias = [
 export default function LugaresPage() {
   const [lugares, setLugares] = useState<Lugar[]>([])
   const [loading, setLoading] = useState(true)
+  const { role } = useAuth()
+  const isAdmin = role === 'admin'
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [filtroCategoria, setFiltroCategoria] = useState<string>('todos')
@@ -314,13 +317,15 @@ export default function LugaresPage() {
         </div>
 
         {/* Botón agregar */}
-        <button
-          onClick={() => setShowForm(true)}
-          className="w-full bg-white rounded-2xl p-4 shadow-tropical mb-6 flex items-center justify-center text-sand-600 hover:text-sand-700 font-bold transition-all hover:scale-[1.02] border-2 border-sand-100"
-        >
-          <Plus size={24} className="mr-2" />
-          Agregar nuevo lugar
-        </button>
+        {isAdmin && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="w-full bg-white rounded-2xl p-4 shadow-tropical mb-6 flex items-center justify-center text-sand-600 hover:text-sand-700 font-bold transition-all hover:scale-[1.02] border-2 border-sand-100"
+          >
+            <Plus size={24} className="mr-2" />
+            Agregar nuevo lugar
+          </button>
+        )}
 
         {/* Lista de lugares */}
         {loading ? (
@@ -387,22 +392,24 @@ export default function LugaresPage() {
                     </div>
 
                     {/* Acciones */}
-                    <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
-                        onClick={() => handleOpenEdit(lugar)}
-                        className="p-2 text-sand-400 hover:text-sand-600 hover:bg-sand-50 rounded-xl transition-all"
-                        title="Editar"
-                      >
-                        <Edit2 size={18} />
-                      </button>
-                      <button
-                        onClick={() => eliminarLugar(lugar.id)}
-                        className="p-2 text-coral-300 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all"
-                        title="Eliminar"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
+                    {isAdmin && (
+                      <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => handleOpenEdit(lugar)}
+                          className="p-2 text-sand-400 hover:text-sand-600 hover:bg-sand-50 rounded-xl transition-all"
+                          title="Editar"
+                        >
+                          <Edit2 size={18} />
+                        </button>
+                        <button
+                          onClick={() => eliminarLugar(lugar.id)}
+                          className="p-2 text-coral-300 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all"
+                          title="Eliminar"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               )
