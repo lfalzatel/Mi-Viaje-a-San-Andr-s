@@ -36,8 +36,9 @@ const itemsSugeridos = {
 
 export default function EquipajePage() {
   const [items, setItems] = useState<ItemEquipaje[]>([])
+  const [progreso, setProgreso] = useState<Record<string, boolean>>({})
   const [loading, setLoading] = useState(true)
-  const { role } = useAuth()
+  const { user, role } = useAuth()
   const isAdmin = role === 'admin'
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -55,15 +56,32 @@ export default function EquipajePage() {
   }, [])
 
   const cargarItems = async () => {
+    if (!user) return
     try {
-      const { data, error } = await supabase
+      // 1. Cargar inventario maestro
+      const { data: dataItems, error: errorItems } = await supabase
         .from('equipaje')
         .select('*')
         .order('categoria', { ascending: true })
         .order('item', { ascending: true })
 
-      if (error) throw error
-      setItems(data || [])
+      if (errorItems) throw errorItems
+
+      // 2. Cargar progreso personal del usuario
+      const { data: dataProgreso, error: errorProgreso } = await supabase
+        .from('equipaje_progreso')
+        .select('item_id, empacado')
+        .eq('user_id', user.id)
+
+      if (errorProgreso) throw errorProgreso
+
+      const progresoMap: Record<string, boolean> = {}
+      dataProgreso?.forEach(p => {
+        progresoMap[p.item_id] = p.empacado
+      })
+
+      setProgreso(progresoMap)
+      setItems(dataItems || [])
     } catch (error) {
       console.error('Error cargando items:', error)
     } finally {
@@ -112,14 +130,23 @@ export default function EquipajePage() {
   }
 
   const toggleEmpacado = async (item: ItemEquipaje) => {
+    if (!user) return
+    const estadoActual = progreso[item.id] || false
+    const nuevoEstado = !estadoActual
+
     try {
       const { error } = await supabase
-        .from('equipaje')
-        .update({ empacado: !item.empacado })
-        .eq('id', item.id)
+        .from('equipaje_progreso')
+        .upsert({
+          user_id: user.id,
+          item_id: item.id,
+          empacado: nuevoEstado
+        }, { onConflict: 'user_id, item_id' })
 
       if (error) throw error
-      cargarItems()
+
+      // Actualizar estado local para feedback inmediato
+      setProgreso(prev => ({ ...prev, [item.id]: nuevoEstado }))
     } catch (error) {
       console.error('Error actualizando item:', error)
     }
@@ -145,7 +172,7 @@ export default function EquipajePage() {
     filtroCategoria === 'todos' || item.categoria === filtroCategoria
   )
 
-  const itemsEmpacados = items.filter(i => i.empacado).length
+  const itemsEmpacados = Object.values(progreso).filter(v => v).length
   const totalItems = items.length
   const porcentajeEmpacado = totalItems > 0 ? (itemsEmpacados / totalItems) * 100 : 0
 
@@ -379,7 +406,7 @@ export default function EquipajePage() {
               return (
                 <div
                   key={item.id}
-                  className={`bg-white rounded-3xl p-5 shadow-tropical border-2 transition-all animate-slide-up group ${item.empacado ? 'border-green-100 opacity-75' : 'border-transparent hover:border-caribbean-100'
+                  className={`bg-white rounded-3xl p-5 shadow-tropical border-2 transition-all animate-slide-up group ${progreso[item.id] ? 'border-green-100 opacity-75' : 'border-transparent hover:border-caribbean-100'
                     }`}
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
@@ -387,10 +414,10 @@ export default function EquipajePage() {
                     {/* Toggle Empacado */}
                     <button
                       onClick={() => toggleEmpacado(item)}
-                      className={`transition-all transform active:scale-90 ${item.empacado ? 'text-green-500' : 'text-caribbean-200 hover:text-caribbean-400'
+                      className={`transition-all transform active:scale-90 ${progreso[item.id] ? 'text-green-500' : 'text-caribbean-200 hover:text-caribbean-400'
                         }`}
                     >
-                      {item.empacado ? <CheckCircle2 size={26} /> : <Circle size={26} />}
+                      {progreso[item.id] ? <CheckCircle2 size={26} /> : <Circle size={26} />}
                     </button>
 
                     <div className="flex-1">
@@ -400,7 +427,7 @@ export default function EquipajePage() {
                         </span>
                       </div>
 
-                      <h3 className={`font-display font-bold mb-0 transition-all ${item.empacado ? 'text-gray-400 line-through' : 'text-caribbean-900'
+                      <h3 className={`font-display font-bold mb-0 transition-all ${progreso[item.id] ? 'text-gray-400 line-through' : 'text-caribbean-900'
                         }`}>
                         {item.item}
                       </h3>

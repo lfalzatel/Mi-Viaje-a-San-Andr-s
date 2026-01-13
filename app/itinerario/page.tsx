@@ -19,8 +19,9 @@ type Evento = {
 
 export default function ItinerarioPage() {
   const [eventos, setEventos] = useState<Evento[]>([])
+  const [progreso, setProgreso] = useState<Record<string, boolean>>({})
   const [loading, setLoading] = useState(true)
-  const { role } = useAuth()
+  const { user, role } = useAuth()
   const isAdmin = role === 'admin'
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -39,15 +40,33 @@ export default function ItinerarioPage() {
   }, [])
 
   const cargarEventos = async () => {
+    if (!user) return
     try {
-      const { data, error } = await supabase
+      // 1. Cargar el plan maestro
+      const { data: dataItinerario, error: errorItinerario } = await supabase
         .from('itinerario')
         .select('*')
         .order('fecha', { ascending: true })
         .order('hora', { ascending: true })
 
-      if (error) throw error
-      setEventos(data || [])
+      if (errorItinerario) throw errorItinerario
+
+      // 2. Cargar el progreso personal del usuario
+      const { data: dataProgreso, error: errorProgreso } = await supabase
+        .from('itinerario_progreso')
+        .select('itinerario_id, completado')
+        .eq('user_id', user.id)
+
+      if (errorProgreso) throw errorProgreso
+
+      // Crear un mapa de progreso para búsqueda rápida
+      const progresoMap: Record<string, boolean> = {}
+      dataProgreso?.forEach(p => {
+        progresoMap[p.itinerario_id] = p.completado
+      })
+
+      setProgreso(progresoMap)
+      setEventos(dataItinerario || [])
     } catch (error) {
       console.error('Error cargando eventos:', error)
     } finally {
@@ -105,14 +124,23 @@ export default function ItinerarioPage() {
   }
 
   const toggleCompletado = async (evento: Evento) => {
+    if (!user) return
+    const estadoActual = progreso[evento.id] || false
+    const nuevoEstado = !estadoActual
+
     try {
       const { error } = await supabase
-        .from('itinerario')
-        .update({ completado: !evento.completado })
-        .eq('id', evento.id)
+        .from('itinerario_progreso')
+        .upsert({
+          user_id: user.id,
+          itinerario_id: evento.id,
+          completado: nuevoEstado
+        }, { onConflict: 'user_id, itinerario_id' })
 
       if (error) throw error
-      cargarEventos()
+
+      // Actualizar estado local para feedback inmediato
+      setProgreso(prev => ({ ...prev, [evento.id]: nuevoEstado }))
     } catch (error) {
       console.error('Error actualizando estado:', error)
     }
@@ -147,11 +175,11 @@ export default function ItinerarioPage() {
   }
 
   const totalActividades = eventos.length
-  const actividadesCompletadas = eventos.filter(e => e.completado).length
+  const actividadesCompletadas = Object.values(progreso).filter(v => v).length
   const porcentajeCompletado = totalActividades > 0 ? (actividadesCompletadas / totalActividades) * 100 : 0
 
   const gastoAcumulado = eventos
-    .filter(e => e.completado)
+    .filter(e => progreso[e.id])
     .reduce((sum, e) => sum + (e.precio || 0), 0)
 
   const formatearMoneda = (valor: number) => {
@@ -368,7 +396,7 @@ export default function ItinerarioPage() {
             {eventos.map((evento, index) => (
               <div
                 key={evento.id}
-                className={`bg-white rounded-3xl p-5 shadow-tropical border-2 transition-all animate-slide-up group ${evento.completado ? 'border-green-100 opacity-75' : 'border-transparent hover:border-caribbean-100'
+                className={`bg-white rounded-3xl p-5 shadow-tropical border-2 transition-all animate-slide-up group ${progreso[evento.id] ? 'border-green-100 opacity-75' : 'border-transparent hover:border-caribbean-100'
                   }`}
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
@@ -376,15 +404,15 @@ export default function ItinerarioPage() {
                   {/* Toggle Completado */}
                   <button
                     onClick={() => toggleCompletado(evento)}
-                    className={`mt-1 transition-all transform active:scale-90 ${evento.completado ? 'text-green-500' : 'text-caribbean-200 hover:text-caribbean-400'
+                    className={`mt-1 transition-all transform active:scale-90 ${progreso[evento.id] ? 'text-green-500' : 'text-caribbean-200 hover:text-caribbean-400'
                       }`}
                   >
-                    {evento.completado ? <CheckCircle2 size={26} /> : <Circle size={26} />}
+                    {progreso[evento.id] ? <CheckCircle2 size={26} /> : <Circle size={26} />}
                   </button>
 
                   <div className="flex-1">
                     <div className="flex justify-between items-start gap-4 mb-2">
-                      <h3 className={`font-display text-lg sm:text-xl font-bold transition-all leading-tight ${evento.completado ? 'text-gray-400 line-through' : 'text-caribbean-900'
+                      <h3 className={`font-display text-lg sm:text-xl font-bold transition-all leading-tight ${progreso[evento.id] ? 'text-gray-400 line-through' : 'text-caribbean-900'
                         }`}>
                         {evento.titulo}
                       </h3>
@@ -417,7 +445,7 @@ export default function ItinerarioPage() {
                     )}
 
                     {evento.descripcion && (
-                      <p className={`text-sm leading-relaxed ${evento.completado ? 'text-gray-400' : 'text-caribbean-700'
+                      <p className={`text-sm leading-relaxed ${progreso[evento.id] ? 'text-gray-400' : 'text-caribbean-700'
                         }`}>
                         {evento.descripcion}
                       </p>

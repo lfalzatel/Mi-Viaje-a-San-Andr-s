@@ -13,6 +13,7 @@ type Gasto = {
   descripcion: string
   fecha: string
   tipo: string
+  user_id?: string
   hora?: string
   esItinerario?: boolean
   esOpcional?: boolean
@@ -30,10 +31,10 @@ const categorias = [
 ]
 
 export default function PresupuestoPage() {
-  // ... existing state and logic ...
   const [gastos, setGastos] = useState<Gasto[]>([])
+  const [progreso, setProgreso] = useState<Record<string, boolean>>({})
   const [loading, setLoading] = useState(true)
-  const { role } = useAuth()
+  const { user, role } = useAuth()
   const isAdmin = role === 'admin'
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -53,22 +54,38 @@ export default function PresupuestoPage() {
   }, [])
 
   const cargarGastos = async () => {
+    if (!user) return
     try {
-      // Cargar gastos manuales
+      // 1. Cargar gastos manuales (propios o antiguos sin id)
       const { data: gastosData, error: gastosError } = await supabase
         .from('gastos')
         .select('*')
+        .or(`user_id.eq.${user.id},user_id.is.null`)
         .order('fecha', { ascending: false })
 
       if (gastosError) throw gastosError
 
-      // Cargar items del itinerario con precio
+      // 2. Cargar items del itinerario
       const { data: itinerarioData, error: itinerarioError } = await supabase
         .from('itinerario')
         .select('*')
         .gt('precio', 0)
 
       if (itinerarioError) throw itinerarioError
+
+      // 3. Cargar progreso del itinerario personal
+      const { data: dataProgreso, error: errorProgreso } = await supabase
+        .from('itinerario_progreso')
+        .select('itinerario_id, completado')
+        .eq('user_id', user.id)
+
+      if (errorProgreso) throw errorProgreso
+
+      const progresoMap: Record<string, boolean> = {}
+      dataProgreso?.forEach(p => {
+        progresoMap[p.itinerario_id] = p.completado
+      })
+      setProgreso(progresoMap)
 
       // Mapear items del itinerario a formato Gasto
       const gastosItinerario: Gasto[] = (itinerarioData || []).map(item => {
@@ -96,7 +113,7 @@ export default function PresupuestoPage() {
           tipo: 'personal',
           esItinerario: true,
           esOpcional: titulo.includes('(opcional)') || desc.includes('(opcional)'),
-          completado: item.completado || false
+          completado: progresoMap[item.id] || false
         }
       })
 
@@ -167,7 +184,8 @@ export default function PresupuestoPage() {
       const payload = {
         ...formData,
         monto: parseFloat(formData.monto),
-        tipo: subTab
+        tipo: subTab,
+        user_id: user?.id
       }
 
       if (editingId) {
@@ -215,7 +233,7 @@ export default function PresupuestoPage() {
 
   // Gasto Real = Gastos manuales + items de itinerario completados
   const gastoReal = gastosFiltrados
-    .filter(g => !g.esItinerario || g.completado)
+    .filter(g => !g.esItinerario || progreso[g.id])
     .reduce((sum, gasto) => sum + gasto.monto, 0)
 
   const porcentajeGastado = (totalGastado / presupuestoTotal) * 100
@@ -599,7 +617,7 @@ export default function PresupuestoPage() {
                       </div>
                     )}
 
-                    {(!gasto.esItinerario || gasto.completado) && (
+                    {(!gasto.esItinerario || progreso[gasto.id]) && (
                       <div className="flex items-center gap-1 bg-green-50 text-green-600 text-[8px] font-black px-2 py-1 rounded-lg border border-green-100 uppercase tracking-tighter">
                         <CheckCircle2 size={10} />
                         Real

@@ -2,12 +2,14 @@
 
 import { useState, useEffect, createContext, useContext } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
+import { User } from '@supabase/supabase-js'
 
 type UserRole = 'admin' | 'user' | null
 
 interface AuthContextType {
+    user: User | null
     role: UserRole
-    login: (role: UserRole) => void
     logout: () => void
     isLoading: boolean
 }
@@ -15,38 +17,55 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+    const [user, setUser] = useState<User | null>(null)
     const [role, setRole] = useState<UserRole>(null)
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
     const pathname = usePathname()
 
     useEffect(() => {
-        // Verificar si hay una sesión guardada
-        const savedRole = localStorage.getItem('user_role') as UserRole
-        if (savedRole) {
-            setRole(savedRole)
-        } else if (pathname !== '/login') {
-            // Si no hay sesión y no estamos en login, redirigir
-            router.push('/login')
+        // Verificar sesión activa al cargar
+        const checkUser = async () => {
+            const { data: { session } } = await supabase.auth.getSession()
+            handleUser(session?.user ?? null)
+            setIsLoading(false)
         }
-        setIsLoading(false)
-    }, [pathname, router])
 
-    const login = (newRole: UserRole) => {
-        setRole(newRole)
-        if (newRole) {
-            localStorage.setItem('user_role', newRole)
+        checkUser()
+
+        // Escuchar cambios en la autenticación
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            handleUser(session?.user ?? null)
+        })
+
+        return () => subscription.unsubscribe()
+    }, [])
+
+    const handleUser = (user: User | null) => {
+        setUser(user)
+        if (user) {
+            // Asumimos que el rol está guardado en user_metadata o app_metadata
+            const userRole = (user.user_metadata?.role || 'user') as UserRole
+            setRole(userRole)
+
+            if (pathname === '/login') {
+                router.push('/itinerario')
+            }
+        } else {
+            setRole(null)
+            if (pathname !== '/login' && pathname !== '/') {
+                router.push('/login')
+            }
         }
     }
 
-    const logout = () => {
-        setRole(null)
-        localStorage.removeItem('user_role')
+    const logout = async () => {
+        await supabase.auth.signOut()
         router.push('/login')
     }
 
     return (
-        <AuthContext.Provider value={{ role, login, logout, isLoading }}>
+        <AuthContext.Provider value={{ user, role, logout, isLoading }}>
             {children}
         </AuthContext.Provider>
     )

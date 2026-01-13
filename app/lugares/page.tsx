@@ -26,8 +26,9 @@ const categorias = [
 
 export default function LugaresPage() {
   const [lugares, setLugares] = useState<Lugar[]>([])
+  const [progreso, setProgreso] = useState<Record<string, boolean>>({})
   const [loading, setLoading] = useState(true)
-  const { role } = useAuth()
+  const { user, role } = useAuth()
   const isAdmin = role === 'admin'
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -45,15 +46,32 @@ export default function LugaresPage() {
   }, [])
 
   const cargarLugares = async () => {
+    if (!user) return
     try {
-      const { data, error } = await supabase
+      // 1. Cargar el catálogo maestro de lugares
+      const { data: dataLugares, error: errorLugares } = await supabase
         .from('lugares')
         .select('*')
         .order('prioridad', { ascending: false })
         .order('nombre', { ascending: true })
 
-      if (error) throw error
-      setLugares(data || [])
+      if (errorLugares) throw errorLugares
+
+      // 2. Cargar el progreso personal del usuario
+      const { data: dataProgreso, error: errorProgreso } = await supabase
+        .from('lugares_progreso')
+        .select('lugar_id, visitado')
+        .eq('user_id', user.id)
+
+      if (errorProgreso) throw errorProgreso
+
+      const progresoMap: Record<string, boolean> = {}
+      dataProgreso?.forEach(p => {
+        progresoMap[p.lugar_id] = p.visitado
+      })
+
+      setProgreso(progresoMap)
+      setLugares(dataLugares || [])
     } catch (error) {
       console.error('Error cargando lugares:', error)
     } finally {
@@ -104,14 +122,23 @@ export default function LugaresPage() {
   }
 
   const toggleVisitado = async (lugar: Lugar) => {
+    if (!user) return
+    const estadoActual = progreso[lugar.id] || false
+    const nuevoEstado = !estadoActual
+
     try {
       const { error } = await supabase
-        .from('lugares')
-        .update({ visitado: !lugar.visitado })
-        .eq('id', lugar.id)
+        .from('lugares_progreso')
+        .upsert({
+          user_id: user.id,
+          lugar_id: lugar.id,
+          visitado: nuevoEstado
+        }, { onConflict: 'user_id, lugar_id' })
 
       if (error) throw error
-      cargarLugares()
+
+      // Actualizar estado local para feedback inmediato
+      setProgreso(prev => ({ ...prev, [lugar.id]: nuevoEstado }))
     } catch (error) {
       console.error('Error actualizando lugar:', error)
     }
@@ -137,7 +164,7 @@ export default function LugaresPage() {
     filtroCategoria === 'todos' || lugar.categoria === filtroCategoria
   )
 
-  const lugaresVisitados = lugares.filter(l => l.visitado).length
+  const lugaresVisitados = Object.values(progreso).filter(v => v).length
   const totalLugares = lugares.length
   const porcentajeVisitado = totalLugares > 0 ? (lugaresVisitados / totalLugares) * 100 : 0
 
@@ -350,7 +377,7 @@ export default function LugaresPage() {
               return (
                 <div
                   key={lugar.id}
-                  className={`bg-white rounded-3xl p-5 shadow-tropical border-2 transition-all animate-slide-up group ${lugar.visitado ? 'border-green-100 opacity-75' : 'border-transparent hover:border-sand-100'
+                  className={`bg-white rounded-3xl p-5 shadow-tropical border-2 transition-all animate-slide-up group ${progreso[lugar.id] ? 'border-green-100 opacity-75' : 'border-transparent hover:border-sand-100'
                     }`}
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
@@ -358,10 +385,10 @@ export default function LugaresPage() {
                     {/* Toggle Visitado */}
                     <button
                       onClick={() => toggleVisitado(lugar)}
-                      className={`mt-1 transition-all transform active:scale-90 ${lugar.visitado ? 'text-green-500' : 'text-sand-200 hover:text-sand-400'
+                      className={`mt-1 transition-all transform active:scale-90 ${progreso[lugar.id] ? 'text-green-500' : 'text-sand-200 hover:text-sand-400'
                         }`}
                     >
-                      {lugar.visitado ? <CheckCircle2 size={26} /> : <Circle size={26} />}
+                      {progreso[lugar.id] ? <CheckCircle2 size={26} /> : <Circle size={26} />}
                     </button>
 
                     <div className="flex-1">
@@ -378,13 +405,13 @@ export default function LugaresPage() {
                         </div>
                       </div>
 
-                      <h3 className={`font-display text-xl font-bold mb-1 transition-all ${lugar.visitado ? 'text-gray-400 line-through' : 'text-sand-900'
+                      <h3 className={`font-display text-xl font-bold mb-1 transition-all ${progreso[lugar.id] ? 'text-gray-400 line-through' : 'text-sand-900'
                         }`}>
                         {lugar.nombre}
                       </h3>
 
                       {lugar.descripcion && (
-                        <p className={`text-sm leading-relaxed ${lugar.visitado ? 'text-gray-400' : 'text-sand-700'
+                        <p className={`text-sm leading-relaxed ${progreso[lugar.id] ? 'text-gray-400' : 'text-sand-700'
                           }`}>
                           {lugar.descripcion}
                         </p>

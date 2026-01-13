@@ -1,15 +1,25 @@
 'use client'
 
 import Link from 'next/link'
-import { MapPin, Calendar, DollarSign, Package, Waves, Palmtree } from 'lucide-react'
+import { MapPin, Calendar, DollarSign, Package, Waves, Palmtree, LogOut, User as UserIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/lib/auth-context'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
+  const { user, role } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
 
   const features = [
     {
@@ -55,7 +65,7 @@ export default function Home() {
       {/* Header con olas animadas */}
       <div className="relative overflow-hidden bg-gradient-to-br from-caribbean-400 via-caribbean-500 to-caribbean-700 pt-16 pb-32">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'var(--wave-pattern)' }}></div>
-        
+
         {/* Elementos decorativos flotantes */}
         <div className="absolute top-10 right-10 text-white/20 animate-float">
           <Palmtree size={60} />
@@ -63,7 +73,27 @@ export default function Home() {
         <div className="absolute bottom-20 left-10 text-white/20 animate-wave" style={{ animationDelay: '1s' }}>
           <Waves size={50} />
         </div>
-        
+
+        {/* User Profile & Logout */}
+        <div className="absolute top-4 right-6 flex items-center gap-4 z-20">
+          <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/30 text-white shadow-sm">
+            <UserIcon size={16} />
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black uppercase tracking-tighter leading-none opacity-70 mb-0.5">
+                {role === 'admin' ? 'Administrador' : 'Viajero'}
+              </span>
+              <span className="text-xs font-bold leading-none">{user?.email?.split('@')[0]}</span>
+            </div>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="p-2.5 bg-white/20 backdrop-blur-md rounded-full border border-white/30 text-white hover:bg-white/40 transition-all hover:scale-105 active:scale-95 shadow-sm"
+            title="Cerrar Sesión"
+          >
+            <LogOut size={20} />
+          </button>
+        </div>
+
         <div className="relative px-6 text-center">
           <div className="animate-slide-up">
             <h1 className="font-display text-5xl md:text-6xl font-bold text-white mb-4 tracking-tight">
@@ -74,7 +104,7 @@ export default function Home() {
               Tu paraíso caribeño te espera 🌴
             </p>
           </div>
-          
+
           {/* Contador de días */}
           <div className="mt-8 animate-fade-in glass rounded-3xl inline-block px-8 py-4 shadow-tropical">
             <p className="text-caribbean-50 text-sm font-medium mb-1">Faltan</p>
