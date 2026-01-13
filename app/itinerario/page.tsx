@@ -336,7 +336,7 @@ export default function ItinerarioPage() {
 
       <div className="px-6 -mt-16 max-w-4xl mx-auto relative z-20">
         {/* Progreso y Gasto */}
-        <div className="bg-white rounded-3xl p-6 shadow-tropical mb-6 sticky top-20 z-30 border border-caribbean-50">
+        <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 shadow-tropical mb-6 sticky top-0 z-30 border border-caribbean-50">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">Tu Aventura</p>
