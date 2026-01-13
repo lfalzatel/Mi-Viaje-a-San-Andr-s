@@ -391,12 +391,14 @@ export default function PresupuestoPage() {
                   </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
-                  <span className="text-[10px] font-black text-green-500 uppercase tracking-tighter">Gasto Real</span>
-                  <p className="font-display text-xl sm:text-2xl font-black text-green-600">
-                    {formatearMoneda(gastoReal)}
-                  </p>
-                </div>
+                {subTab === 'personal' && (
+                  <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
+                    <span className="text-[10px] font-bold text-caribbean-500 uppercase tracking-tighter">Disponible Libre</span>
+                    <p className={`font-display text-xl sm:text-2xl font-bold ${disponible < 0 ? 'text-red-600' : 'text-caribbean-700'}`}>
+                      {formatearMoneda(disponible)}
+                    </p>
+                  </div>
+                )}
 
                 {subTab === 'personal' && totalGastado !== totalObligatorio && (
                   <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 col-span-2">
@@ -409,12 +411,12 @@ export default function PresupuestoPage() {
               </div>
             </div>
 
-            <div className="bg-caribbean-50/50 p-4 rounded-2xl flex flex-col items-center justify-center min-w-[120px]">
-              <p className="text-[10px] font-bold text-caribbean-500 uppercase tracking-wider mb-1 text-center">
-                {subTab === 'personal' ? 'Presupuesto Libre' : 'Por Persona'}
+            <div className="bg-green-50/50 p-4 rounded-2xl flex flex-col items-center justify-center min-w-[140px] border border-green-100 shadow-sm">
+              <p className="text-[10px] font-bold text-green-600 uppercase tracking-wider mb-1 text-center">
+                {subTab === 'personal' ? 'Gasto Real Total' : 'Por Persona'}
               </p>
-              <p className={`font-display text-2xl font-bold text-center ${subTab === 'personal' && disponible < 0 ? 'text-red-600' : 'text-caribbean-700'}`}>
-                {subTab === 'personal' ? formatearMoneda(disponible) : formatearMoneda(totalGastado / numPersonas)}
+              <p className="font-display text-3xl font-black text-center text-green-600">
+                {subTab === 'personal' ? formatearMoneda(gastoReal) : formatearMoneda(totalGastado / numPersonas)}
               </p>
             </div>
           </div>
