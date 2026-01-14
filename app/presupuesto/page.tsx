@@ -267,21 +267,22 @@ export default function PresupuestoPage() {
       {/* Header Premium Cinemático */}
       <div className="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-950 pt-10 pb-20 px-6 overflow-hidden">
         {/* Elementos decorativos animados */}
-        <div className="absolute top-[-10%] right-[-5%] w-64 h-64 bg-coral-500/20 rounded-full blur-[80px] animate-pulse" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-80 h-80 bg-caribbean-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
-
         {/* User Profile Button */}
         <div className="absolute top-4 right-6 flex items-center gap-4 z-20">
           <UserProfileButton />
         </div>
 
+        {/* Back Button matching Profile style */}
+        <Link
+          href="/"
+          className="absolute top-4 left-6 z-20 p-2.5 bg-white/20 backdrop-blur-md rounded-full border border-white/30 text-white hover:bg-white/40 transition-all hover:scale-105 active:scale-95 shadow-sm"
+          title="Regresar"
+        >
+          <ArrowLeft size={20} />
+        </Link>
+
         <div className="max-w-4xl mx-auto relative z-10">
-          <Link href="/" className="inline-flex items-center text-white/60 mb-8 hover:text-white transition-all group">
-            <div className="p-2 rounded-xl bg-white/5 border border-white/10 group-hover:bg-white/10 transition-all mr-3">
-              <ArrowLeft size={18} />
-            </div>
-            <span className="font-display font-medium tracking-wide text-sm uppercase">Regresar</span>
-          </Link>
+          <div className="h-16" /> {/* Spacer for the absolute buttons */}
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="animate-slide-up">
