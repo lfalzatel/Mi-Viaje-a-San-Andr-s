@@ -115,7 +115,7 @@ export default function LugaresPage() {
       } else {
         const { error } = await supabase
           .from('lugares')
-          .insert([formData])
+          .insert([{ ...formData, user_id: user.id }])
         if (error) throw error
       }
 
@@ -349,17 +349,6 @@ export default function LugaresPage() {
           ))}
         </div>
 
-        {/* Botón agregar */}
-        {isAdmin && (
-          <button
-            onClick={() => setShowForm(true)}
-            className="w-full bg-white rounded-2xl p-4 shadow-tropical mb-6 flex items-center justify-center text-sand-600 hover:text-sand-700 font-bold transition-all hover:scale-[1.02] border-2 border-sand-100"
-          >
-            <Plus size={24} className="mr-2" />
-            Agregar nuevo lugar
-          </button>
-        )}
-
         {/* Lista de lugares */}
         {loading ? (
           <div className="text-center py-20">
@@ -449,6 +438,20 @@ export default function LugaresPage() {
             })}
           </div>
         )}
+      </div>
+
+      {/* FAB de Lugares - Visible para todos */}
+      <div className="fixed bottom-24 right-6 z-50 flex flex-col items-end gap-3 pointer-events-none">
+        <button
+          onClick={() => setShowForm(true)}
+          className="pointer-events-auto p-4 bg-gradient-to-br from-sand-500 to-sand-600 text-white rounded-full shadow-[0_8px_25px_rgba(194,165,116,0.4)] hover:shadow-[0_12px_35px_rgba(194,165,116,0.5)] transition-all transform hover:scale-110 active:scale-90 group relative"
+          title="Agregar Lugar"
+        >
+          <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-sand-900/80 backdrop-blur-md text-white px-3 py-1.5 rounded-xl text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Nuevo Destino
+          </div>
+          <Plus size={28} className="transition-transform group-hover:rotate-90 duration-300" />
+        </button>
       </div>
 
       <style jsx>{`

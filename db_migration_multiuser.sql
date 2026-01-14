@@ -69,3 +69,16 @@ CREATE POLICY "Usuarios pueden crear sus propios items de equipaje" ON "public".
 
 CREATE POLICY "Usuarios pueden editar/borrar sus propios items de equipaje" ON "public"."equipaje"
     FOR ALL USING (auth.uid() = user_id);
+
+-- 8. Lugares: Cada usuario ve sus propios lugares o los globales
+ALTER TABLE "public"."lugares" ADD COLUMN IF NOT EXISTS "user_id" "uuid" REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+ALTER TABLE "public"."lugares" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Usuarios pueden ver lugares propios o compartidos" ON "public"."lugares"
+    FOR SELECT USING (auth.uid() = user_id OR user_id IS NULL);
+
+CREATE POLICY "Usuarios pueden crear sus propios lugares" ON "public"."lugares"
+    FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Usuarios pueden editar/borrar sus propios lugares" ON "public"."lugares"
+    FOR ALL USING (auth.uid() = user_id);
