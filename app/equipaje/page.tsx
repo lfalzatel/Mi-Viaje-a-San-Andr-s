@@ -202,7 +202,7 @@ export default function EquipajePage() {
           </Link>
 
           {/* User Profile Button */}
-          <div className="absolute top-4 right-6 z-20">
+          <div className="absolute top-4 right-6 flex items-center gap-4 z-20">
             <UserProfileButton />
           </div>
 
