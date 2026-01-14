@@ -206,15 +206,39 @@ export default function LugaresPage() {
             </div>
 
             <div className="animate-scale-in flex flex-col items-end">
-              <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-6 rounded-[2.5rem] shadow-2xl">
-                <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-right">Lugares Visitados</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
-                    <MapPin size={20} />
+              <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-6 rounded-[2.5rem] shadow-2xl w-full sm:w-auto min-w-[280px]">
+                <div className="flex justify-between items-start mb-4 gap-8">
+                  <div>
+                    <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-2">Lugares Visitados</p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                        <MapPin size={20} />
+                      </div>
+                      <span className="font-display text-3xl md:text-4xl font-black text-white italic">
+                        {lugaresVisitados} / {totalLugares}
+                      </span>
+                    </div>
                   </div>
-                  <span className="font-display text-3xl md:text-4xl font-black text-white italic">
-                    {lugaresVisitados} / {totalLugares}
-                  </span>
+                  <div className="text-5xl hidden sm:block">
+                    {porcentajeVisitado === 100 ? '🎉' : '🗺️'}
+                  </div>
+                </div>
+
+                {/* Progress bar inside glass card */}
+                <div className="space-y-2">
+                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-1000 shadow-[0_0_10px_rgba(16,185,129,0.5)] ${porcentajeVisitado === 100 ? 'bg-gradient-to-r from-green-400 to-green-500' : 'bg-gradient-to-r from-emerald-400 to-teal-400'
+                        }`}
+                      style={{ width: `${porcentajeVisitado}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">Exploración</span>
+                    <span className="text-[9px] font-black text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded-md">
+                      {porcentajeVisitado.toFixed(0)}% COMPLETADO
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -323,31 +347,7 @@ export default function LugaresPage() {
         </div>
       )}
 
-      <div className="px-6 -mt-16 max-w-4xl mx-auto relative z-20">
-        {/* Progreso */}
-        <div className="bg-white rounded-3xl p-6 shadow-tropical mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <p className="text-xs font-bold text-emerald-500 uppercase tracking-wider mb-1">Tu Progreso</p>
-              <p className="font-display text-3xl font-bold text-emerald-800">
-                {lugaresVisitados} <span className="text-sm font-medium text-gray-400 italic">de {totalLugares} lugares</span>
-              </p>
-            </div>
-            <div className="text-5xl">
-              {porcentajeVisitado === 100 ? '🎉' : '🗺️'}
-            </div>
-          </div>
-          <div className="h-4 bg-gray-100 rounded-full overflow-hidden border border-gray-100 p-0.5">
-            <div
-              className={`h-full rounded-full transition-all duration-1000 ${porcentajeVisitado === 100 ? 'bg-gradient-to-r from-green-400 to-green-500' : 'bg-gradient-to-r from-emerald-400 to-emerald-600'
-                }`}
-              style={{ width: `${porcentajeVisitado}%` }}
-            />
-          </div>
-          <p className="text-right text-[10px] font-bold text-emerald-600 mt-2 uppercase">
-            {porcentajeVisitado.toFixed(0)}% Descubierto
-          </p>
-        </div>
+      <div className="px-6 -mt-8 max-w-4xl mx-auto relative z-20">
 
         {/* Filtros */}
         <div className="flex gap-2 overflow-x-auto pb-4 mb-2 hide-scrollbar">
