@@ -13,6 +13,8 @@ type Lugar = {
   categoria: string
   visitado: boolean
   prioridad: number
+  lat?: number
+  lng?: number
 }
 
 const categorias = [
@@ -260,18 +262,34 @@ export default function LugaresPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-1">
-                  Nombre del lugar
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Ej: Johnny Cay"
-                  value={formData.nombre}
-                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-emerald-50 border-2 border-transparent focus:border-emerald-400 focus:bg-white focus:outline-none transition-all"
-                />
+              <div className="flex gap-2">
+                <div className="flex-1">
+                  <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-1">
+                    Nombre del lugar
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ej: Johnny Cay"
+                    value={formData.nombre}
+                    onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl bg-emerald-50 border-2 border-transparent focus:border-emerald-400 focus:bg-white focus:outline-none transition-all"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(formData.nombre + ' San Andrés')}`
+                      window.open(url, '_blank')
+                    }}
+                    disabled={!formData.nombre}
+                    className="p-3.5 bg-emerald-100 text-emerald-600 rounded-xl hover:bg-emerald-200 disabled:opacity-50 transition-all shadow-sm"
+                    title="Verificar en Google Maps"
+                  >
+                    <MapPin size={20} />
+                  </button>
+                </div>
               </div>
 
               <div>
@@ -425,10 +443,24 @@ export default function LugaresPage() {
                         </div>
                       </div>
 
-                      <h3 className={`font-display text-xl font-bold mb-1 transition-all ${progreso[lugar.id] ? 'text-gray-400 line-through' : 'text-emerald-900'
-                        }`}>
-                        {lugar.nombre}
-                      </h3>
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lugar.nombre + ' San Andrés')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group/link inline-block"
+                      >
+                        <h3 className={`font-display text-xl font-bold mb-1 transition-all ${progreso[lugar.id] ? 'text-gray-400 line-through' : 'text-emerald-900 group-hover/link:text-emerald-600'
+                          }`}>
+                          {lugar.nombre}
+                          <span className="ml-2 opacity-0 group-hover/link:opacity-100 transition-opacity inline-block align-middle">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="w-3 h-3 text-caribbean-400" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                              <polyline points="15 3 21 3 21 9" />
+                              <line x1="10" y1="14" x2="21" y2="3" />
+                            </svg>
+                          </span>
+                        </h3>
+                      </a>
 
                       {lugar.descripcion && (
                         <p className={`text-sm leading-relaxed ${progreso[lugar.id] ? 'text-gray-400' : 'text-emerald-700'

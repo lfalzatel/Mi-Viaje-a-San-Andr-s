@@ -15,6 +15,8 @@ type Evento = {
   ubicacion: string
   completado: boolean
   precio: number
+  lat?: number
+  lng?: number
 }
 
 export default function ItinerarioPage() {
@@ -337,17 +339,33 @@ export default function ItinerarioPage() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">
-                  Ubicación
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ej: Johnny Cay"
-                  value={formData.ubicacion}
-                  onChange={(e) => setFormData({ ...formData, ubicacion: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-caribbean-50 border-2 border-transparent focus:border-caribbean-400 focus:bg-white focus:outline-none transition-all"
-                />
+              <div className="flex gap-2">
+                <div className="flex-1">
+                  <label className="block text-xs font-bold text-caribbean-500 uppercase tracking-wider mb-1">
+                    Ubicación
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Ej: Johnny Cay"
+                    value={formData.ubicacion}
+                    onChange={(e) => setFormData({ ...formData, ubicacion: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl bg-caribbean-50 border-2 border-transparent focus:border-caribbean-400 focus:bg-white focus:outline-none transition-all"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(formData.ubicacion + ' San Andrés')}`
+                      window.open(url, '_blank')
+                    }}
+                    disabled={!formData.ubicacion}
+                    className="p-3.5 bg-caribbean-100 text-caribbean-600 rounded-xl hover:bg-caribbean-200 disabled:opacity-50 transition-all shadow-sm"
+                    title="Verificar en Google Maps"
+                  >
+                    <MapPin size={20} />
+                  </button>
+                </div>
               </div>
 
               <div>
@@ -448,10 +466,24 @@ export default function ItinerarioPage() {
                     </div>
 
                     {evento.ubicacion && (
-                      <div className="flex items-center gap-1.5 text-caribbean-600 mb-2">
-                        <MapPin size={14} className="text-caribbean-400" />
-                        <span className="text-sm font-medium">{evento.ubicacion}</span>
-                      </div>
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(evento.ubicacion + ' San Andrés')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 text-caribbean-600 mb-2 hover:text-caribbean-500 transition-colors group/link"
+                      >
+                        <MapPin size={14} className="text-caribbean-400 group-hover/link:text-caribbean-500" />
+                        <span className="text-sm font-medium border-b border-transparent group-hover/link:border-caribbean-500 decoration-dotted">
+                          {evento.ubicacion}
+                        </span>
+                        <div className="ml-1 opacity-0 group-hover/link:opacity-100 transition-opacity">
+                          <svg size="12" viewBox="0 0 24 24" fill="none" className="w-3 h-3 text-caribbean-400" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                            <polyline points="15 3 21 3 21 9" />
+                            <line x1="10" y1="14" x2="21" y2="3" />
+                          </svg>
+                        </div>
+                      </a>
                     )}
 
                     {evento.descripcion && (
