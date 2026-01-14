@@ -21,7 +21,7 @@ export default function LoginPage() {
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `${window.location.origin}/itinerario`,
+                    redirectTo: `${window.location.origin}/`,
                 },
             })
             if (error) throw error
@@ -65,7 +65,7 @@ export default function LoginPage() {
                 setMessage('¡Cuenta creada! Ya puedes iniciar sesión.')
                 setMode('login')
             } else {
-                router.push('/itinerario')
+                router.push('/')
             }
         } catch (err: any) {
             setError(err.message || 'Error al autenticar')
