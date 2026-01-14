@@ -1,10 +1,12 @@
--- Migration: Soporte para Multi-Usuario y Progreso Independiente
+-- Migration: Soporte para Multi-Usuario y Progreso Independiente (Idempotente)
 -- Ejecuta esto en el Editor SQL de Supabase
 
--- 1. Asegurar que la tabla de gastos tiene user_id
+-- 1. Asegurar columnas de user_id
 ALTER TABLE "public"."gastos" ADD COLUMN IF NOT EXISTS "user_id" "uuid" REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+ALTER TABLE "public"."equipaje" ADD COLUMN IF NOT EXISTS "user_id" "uuid" REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+ALTER TABLE "public"."lugares" ADD COLUMN IF NOT EXISTS "user_id" "uuid" REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 
--- 2. Tabla para seguimiento independiente del Itinerario
+-- 2. Tablas de progreso
 CREATE TABLE IF NOT EXISTS "public"."itinerario_progreso" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" REFERENCES "auth"."users"("id") ON DELETE CASCADE NOT NULL,
@@ -15,7 +17,6 @@ CREATE TABLE IF NOT EXISTS "public"."itinerario_progreso" (
     UNIQUE ("user_id", "itinerario_id")
 );
 
--- 3. Tabla para seguimiento independiente de Lugares
 CREATE TABLE IF NOT EXISTS "public"."lugares_progreso" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" REFERENCES "auth"."users"("id") ON DELETE CASCADE NOT NULL,
@@ -26,7 +27,6 @@ CREATE TABLE IF NOT EXISTS "public"."lugares_progreso" (
     UNIQUE ("user_id", "lugar_id")
 );
 
--- 4. Tabla para seguimiento independiente de la Maleta/Equipaje
 CREATE TABLE IF NOT EXISTS "public"."equipaje_progreso" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" REFERENCES "auth"."users"("id") ON DELETE CASCADE NOT NULL,
@@ -37,48 +37,58 @@ CREATE TABLE IF NOT EXISTS "public"."equipaje_progreso" (
     UNIQUE ("user_id", "item_id")
 );
 
--- 5. Habilitar RLS (Row Level Security) para las nuevas tablas
+-- 3. Habilitar RLS
+ALTER TABLE "public"."gastos" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."itinerario_progreso" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."lugares_progreso" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."equipaje_progreso" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "public"."equipaje" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "public"."lugares" ENABLE ROW LEVEL SECURITY;
 
--- 6. Políticas de RLS
--- Gastos: Cada usuario ve sus propios gastos
+-- 4. Políticas (Limpiar antes de crear para evitar errores de 'already exists')
+
+-- Gastos
+DROP POLICY IF EXISTS "Usuarios pueden ver sus propios gastos" ON "public"."gastos";
 CREATE POLICY "Usuarios pueden ver sus propios gastos" ON "public"."gastos"
-    FOR SELECT USING (auth.uid() = user_id OR user_id IS NULL); -- IS NULL para gastos compartidos heredados
+    FOR SELECT USING (auth.uid() = user_id OR user_id IS NULL);
 
--- Progreso: Cada usuario solo accede a su propio progreso
+-- Itinerario Progreso
+DROP POLICY IF EXISTS "Usuarios pueden gestionar su progreso en itinerario" ON "public"."itinerario_progreso";
 CREATE POLICY "Usuarios pueden gestionar su progreso en itinerario" ON "public"."itinerario_progreso"
     FOR ALL USING (auth.uid() = user_id);
 
+-- Lugares Progreso
+DROP POLICY IF EXISTS "Usuarios pueden gestionar su progreso en lugares" ON "public"."lugares_progreso";
 CREATE POLICY "Usuarios pueden gestionar su progreso en lugares" ON "public"."lugares_progreso"
     FOR ALL USING (auth.uid() = user_id);
 
+-- Equipaje Progreso
+DROP POLICY IF EXISTS "Usuarios pueden gestionar su progreso en equipaje" ON "public"."equipaje_progreso";
 CREATE POLICY "Usuarios pueden gestionar su progreso en equipaje" ON "public"."equipaje_progreso"
     FOR ALL USING (auth.uid() = user_id);
 
--- 7. Equipaje: Cada usuario ve sus propios items o los globales
-ALTER TABLE "public"."equipaje" ADD COLUMN IF NOT EXISTS "user_id" "uuid" REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-ALTER TABLE "public"."equipaje" ENABLE ROW LEVEL SECURITY;
-
+-- Equipaje (Items Privados)
+DROP POLICY IF EXISTS "Usuarios pueden ver items de equipaje propios o compartidos" ON "public"."equipaje";
 CREATE POLICY "Usuarios pueden ver items de equipaje propios o compartidos" ON "public"."equipaje"
     FOR SELECT USING (auth.uid() = user_id OR user_id IS NULL);
 
+DROP POLICY IF EXISTS "Usuarios pueden crear sus propios items de equipaje" ON "public"."equipaje";
 CREATE POLICY "Usuarios pueden crear sus propios items de equipaje" ON "public"."equipaje"
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Usuarios pueden editar/borrar sus propios items de equipaje" ON "public"."equipaje";
 CREATE POLICY "Usuarios pueden editar/borrar sus propios items de equipaje" ON "public"."equipaje"
     FOR ALL USING (auth.uid() = user_id);
 
--- 8. Lugares: Cada usuario ve sus propios lugares o los globales
-ALTER TABLE "public"."lugares" ADD COLUMN IF NOT EXISTS "user_id" "uuid" REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-ALTER TABLE "public"."lugares" ENABLE ROW LEVEL SECURITY;
-
+-- Lugares (Items Privados)
+DROP POLICY IF EXISTS "Usuarios pueden ver lugares propios o compartidos" ON "public"."lugares";
 CREATE POLICY "Usuarios pueden ver lugares propios o compartidos" ON "public"."lugares"
     FOR SELECT USING (auth.uid() = user_id OR user_id IS NULL);
 
+DROP POLICY IF EXISTS "Usuarios pueden crear sus propios lugares" ON "public"."lugares";
 CREATE POLICY "Usuarios pueden crear sus propios lugares" ON "public"."lugares"
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Usuarios pueden editar/borrar sus propios lugares" ON "public"."lugares";
 CREATE POLICY "Usuarios pueden editar/borrar sus propios lugares" ON "public"."lugares"
     FOR ALL USING (auth.uid() = user_id);
