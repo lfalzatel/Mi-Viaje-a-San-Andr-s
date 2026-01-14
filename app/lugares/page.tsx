@@ -105,6 +105,8 @@ export default function LugaresPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!user) return
+
     try {
       if (editingId) {
         const { error } = await supabase
