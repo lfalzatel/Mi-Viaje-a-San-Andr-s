@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ArrowLeft, Plus, MapPin, Trash2, CheckCircle2, Circle, Star, Edit2, X } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/auth-context'
+import UserProfileButton from '@/components/UserProfileButton'
 
 type Lugar = {
   id: string
@@ -193,6 +194,11 @@ export default function LugaresPage() {
             </div>
             <span className="font-display font-medium tracking-wide text-sm uppercase">Regresar</span>
           </Link>
+
+          {/* User Profile Button */}
+          <div className="absolute top-4 right-6 z-20">
+            <UserProfileButton />
+          </div>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="animate-slide-up">
