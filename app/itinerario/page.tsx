@@ -200,7 +200,7 @@ export default function ItinerarioPage() {
   return (
     <main className="min-h-screen">
       {/* Header Premium Cinemático - Profundo y de Alto Contraste */}
-      <div className="relative bg-gradient-to-b from-[#0a192f] via-[#001d3d] to-[#000814] pt-6 pb-14 px-6 overflow-hidden">
+      <div className="relative bg-gradient-to-b from-[#0a192f] via-[#001d3d] to-[#000814] pt-10 pb-20 px-6 overflow-hidden">
         {/* Elementos decorativos solo en la parte superior para evitar degradado al blanco abajo */}
         <div className="absolute top-[-20%] right-[-10%] w-96 h-96 bg-caribbean-500/10 rounded-full blur-[100px] animate-pulse" />
         <div className="absolute top-[-10%] left-[-10%] w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '1.5s' }} />
@@ -383,7 +383,7 @@ export default function ItinerarioPage() {
         </div>
       )}
 
-      <div className="px-4 sm:px-6 -mt-12 max-w-4xl mx-auto relative z-20">
+      <div className="px-4 sm:px-6 -mt-8 max-w-4xl mx-auto relative z-20">
 
         {/* Lista de eventos */}
         {loading ? (
