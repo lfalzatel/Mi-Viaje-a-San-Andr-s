@@ -5,6 +5,10 @@
 ALTER TABLE "public"."gastos" ADD COLUMN IF NOT EXISTS "user_id" "uuid" REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 ALTER TABLE "public"."equipaje" ADD COLUMN IF NOT EXISTS "user_id" "uuid" REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 ALTER TABLE "public"."lugares" ADD COLUMN IF NOT EXISTS "user_id" "uuid" REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+ALTER TABLE "public"."itinerario" ADD COLUMN IF NOT EXISTS "lat" NUMERIC(10, 8);
+ALTER TABLE "public"."itinerario" ADD COLUMN IF NOT EXISTS "lng" NUMERIC(11, 8);
+ALTER TABLE "public"."lugares" ADD COLUMN IF NOT EXISTS "lat" NUMERIC(10, 8);
+ALTER TABLE "public"."lugares" ADD COLUMN IF NOT EXISTS "lng" NUMERIC(11, 8);
 
 -- 2. Tablas de progreso
 CREATE TABLE IF NOT EXISTS "public"."itinerario_progreso" (
