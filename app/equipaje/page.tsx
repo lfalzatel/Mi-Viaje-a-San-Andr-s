@@ -186,24 +186,47 @@ export default function EquipajePage() {
 
   return (
     <main className="min-h-screen">
-      {/* Header */}
-      <div className="bg-gradient-to-br from-caribbean-400 to-coral-400 pt-12 pb-24 px-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-4 opacity-10">
-          <Briefcase size={120} />
-        </div>
+      {/* Header Premium Cinemático */}
+      <div className="relative bg-gradient-to-br from-teal-900 via-caribbean-900 to-caribbean-950 pt-16 pb-32 px-6 overflow-hidden">
+        {/* Elementos decorativos animados */}
+        <div className="absolute top-[-10%] right-[-5%] w-64 h-64 bg-caribbean-400/20 rounded-full blur-[80px] animate-pulse" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-80 h-80 bg-emerald-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1.5s' }} />
 
-        <Link href="/" className="inline-flex items-center text-white mb-6 hover:text-caribbean-100 transition-colors relative z-10">
-          <ArrowLeft size={20} className="mr-2" />
-          Inicio
-        </Link>
+        <div className="max-w-4xl mx-auto relative z-10">
+          <Link href="/" className="inline-flex items-center text-white/60 mb-8 hover:text-white transition-all group">
+            <div className="p-2 rounded-xl bg-white/5 border border-white/10 group-hover:bg-white/10 transition-all mr-3">
+              <ArrowLeft size={18} />
+            </div>
+            <span className="font-display font-medium tracking-wide text-sm uppercase">Regresar</span>
+          </Link>
 
-        <div className="relative z-10">
-          <h1 className="font-display text-4xl font-bold text-white mb-2">
-            Equipaje
-          </h1>
-          <p className="text-white/90 font-body">
-            Que no se te olvide el bloqueador
-          </p>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div className="animate-slide-up">
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-caribbean-500/20 border border-caribbean-500/30 text-caribbean-200 text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+                Preparativos de Viaje
+              </div>
+              <h1 className="font-display text-5xl md:text-7xl font-black text-white leading-none tracking-tight mb-4">
+                Mi Maleta
+              </h1>
+              <p className="text-white/40 font-medium text-lg md:text-xl max-w-md leading-relaxed">
+                Organiza todo lo necesario para que no falte nada en la isla.
+              </p>
+            </div>
+
+            <div className="animate-scale-in flex flex-col items-end">
+              <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-6 rounded-[2.5rem] shadow-2xl">
+                <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-right">Items Empacados</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-caribbean-500 flex items-center justify-center text-white shadow-lg shadow-caribbean-500/20">
+                    <Briefcase size={20} />
+                  </div>
+                  <span className="font-display text-3xl md:text-4xl font-black text-white italic">
+                    {itemsEmpacados} / {totalItems}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

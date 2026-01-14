@@ -263,24 +263,47 @@ export default function PresupuestoPage() {
 
   return (
     <main className="min-h-screen">
-      {/* Header */}
-      <div className="bg-gradient-to-br from-coral-400 to-coral-600 pt-12 pb-24 px-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-4 opacity-10">
-          <Wallet size={120} />
-        </div>
+      {/* Header Premium Cinemático */}
+      <div className="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-950 pt-16 pb-32 px-6 overflow-hidden">
+        {/* Elementos decorativos animados */}
+        <div className="absolute top-[-10%] right-[-5%] w-64 h-64 bg-coral-500/20 rounded-full blur-[80px] animate-pulse" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-80 h-80 bg-caribbean-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
 
-        <Link href="/" className="inline-flex items-center text-white mb-6 hover:text-coral-100 transition-colors relative z-10">
-          <ArrowLeft size={20} className="mr-2" />
-          Inicio
-        </Link>
+        <div className="max-w-4xl mx-auto relative z-10">
+          <Link href="/" className="inline-flex items-center text-white/60 mb-8 hover:text-white transition-all group">
+            <div className="p-2 rounded-xl bg-white/5 border border-white/10 group-hover:bg-white/10 transition-all mr-3">
+              <ArrowLeft size={18} />
+            </div>
+            <span className="font-display font-medium tracking-wide text-sm uppercase">Regresar</span>
+          </Link>
 
-        <div className="relative z-10">
-          <h1 className="font-display text-4xl font-bold text-white mb-2">
-            Presupuesto
-          </h1>
-          <p className="text-coral-100 font-body">
-            {subTab === 'personal' ? 'Tus gastos individuales' : 'Gastos compartidos del grupo'}
-          </p>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div className="animate-slide-up">
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-coral-500/20 border border-coral-500/30 text-coral-200 text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+                Administración Financiera
+              </div>
+              <h1 className="font-display text-5xl md:text-7xl font-black text-white leading-none tracking-tight mb-4">
+                Presupuesto
+              </h1>
+              <p className="text-white/40 font-medium text-lg md:text-xl max-w-md leading-relaxed">
+                Control total de tus gastos, desde los personales hasta la aventura grupal.
+              </p>
+            </div>
+
+            <div className="animate-scale-in flex flex-col items-end">
+              <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-6 rounded-[2.5rem] shadow-2xl">
+                <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-right">Presupuesto Total</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-coral-500 flex items-center justify-center text-white shadow-lg shadow-coral-500/20">
+                    <DollarSign size={20} />
+                  </div>
+                  <span className="font-display text-3xl md:text-4xl font-black text-white italic">
+                    {formatearMoneda(presupuestoTotal)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
