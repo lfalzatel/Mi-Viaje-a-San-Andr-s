@@ -292,13 +292,13 @@ export default function PresupuestoPage() {
 
             <div className="animate-scale-in flex flex-col items-end">
               <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-6 rounded-[2.5rem] shadow-2xl">
-                <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-right">Presupuesto Total</p>
+                <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-right">Gasto Real</p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-coral-500 flex items-center justify-center text-white shadow-lg shadow-coral-500/20">
                     <DollarSign size={20} />
                   </div>
                   <span className="font-display text-3xl md:text-4xl font-black text-white italic">
-                    {formatearMoneda(presupuestoTotal)}
+                    {formatearMoneda(gastoReal)}
                   </span>
                 </div>
               </div>
