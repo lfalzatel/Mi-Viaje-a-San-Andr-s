@@ -199,36 +199,48 @@ export default function ItinerarioPage() {
 
   return (
     <main className="min-h-screen">
-      {/* Header Premium con diseño inmersivo */}
-      <div className="bg-[#0092d6] pt-16 pb-32 px-6 relative overflow-visible">
-        <div className="max-w-4xl mx-auto relative">
-          <Link href="/" className="inline-flex items-center text-white/80 mb-8 hover:text-white transition-all group relative z-10">
-            <div className="p-2 bg-white/10 rounded-full mr-3 group-hover:bg-white/20 transition-all">
+      {/* Header Premium Cinemático */}
+      <div className="relative bg-gradient-to-br from-caribbean-900 via-indigo-900 to-caribbean-950 pt-16 pb-32 px-6 overflow-hidden">
+        {/* Elementos decorativos animados */}
+        <div className="absolute top-[-10%] right-[-5%] w-64 h-64 bg-caribbean-500/20 rounded-full blur-[80px] animate-pulse" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-80 h-80 bg-coral-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
+
+        <div className="max-w-4xl mx-auto relative z-10">
+          <Link href="/" className="inline-flex items-center text-white/60 mb-8 hover:text-white transition-all group">
+            <div className="p-2 rounded-xl bg-white/5 border border-white/10 group-hover:bg-white/10 transition-all mr-3">
               <ArrowLeft size={18} />
             </div>
-            <span className="font-bold tracking-tight">Regresar</span>
+            <span className="font-display font-medium tracking-wide text-sm uppercase">Regresar</span>
           </Link>
 
-          <div className="relative z-10 animate-slide-up">
-            <div className="flex items-center gap-4 mb-3">
-              <div className="p-3 bg-white/20 backdrop-blur-md rounded-2xl shadow-inner border border-white/30">
-                <Calendar size={32} className="text-white" />
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div className="animate-slide-up">
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-caribbean-500/20 border border-caribbean-500/30 text-caribbean-200 text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+                Hoja de Ruta del Viaje
               </div>
-              <div>
-                <h1 className="font-display text-5xl font-black text-white tracking-tighter italic leading-none">
-                  Itinerario
-                </h1>
-                <p className="text-caribbean-50/80 font-medium tracking-tight mt-1">
-                  Planifica tu aventura día a día
-                </p>
+              <h1 className="font-display text-5xl md:text-7xl font-black text-white leading-none tracking-tight mb-4 italic">
+                Itinerario
+              </h1>
+              <p className="text-white/40 font-medium text-lg md:text-xl max-w-md leading-relaxed">
+                Tus planes día a día en el paraíso más hermoso del Caribe.
+              </p>
+            </div>
+
+            <div className="animate-scale-in flex flex-col items-end">
+              <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-6 rounded-[2.5rem] shadow-2xl">
+                <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-right">Tu Progreso</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-caribbean-500 flex items-center justify-center text-white shadow-lg shadow-caribbean-500/20">
+                    <Calendar size={20} />
+                  </div>
+                  <span className="font-display text-3xl md:text-4xl font-black text-white italic">
+                    {actividadesCompletadas} / {totalActividades}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Elemento decorativo de fondo */}
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-caribbean-400/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-coral-400/20 rounded-full blur-3xl pointer-events-none" />
       </div>
 
       {/* Modal Formulario (Fuera del z-index container) */}
