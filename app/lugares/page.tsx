@@ -179,7 +179,7 @@ export default function LugaresPage() {
   return (
     <main className="min-h-screen">
       {/* Header Premium Cinemático */}
-      <div className="relative bg-gradient-to-br from-emerald-900 via-teal-900 to-emerald-950 pt-16 pb-32 px-6 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-emerald-900 via-teal-900 to-emerald-950 pt-10 pb-20 px-6 overflow-hidden">
         {/* Elementos decorativos animados */}
         <div className="absolute top-[-10%] right-[-5%] w-64 h-64 bg-caribbean-400/20 rounded-full blur-[80px] animate-pulse" />
         <div className="absolute bottom-[-20%] left-[-10%] w-80 h-80 bg-mint-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '2s' }} />
@@ -405,7 +405,7 @@ export default function LugaresPage() {
                     {/* Toggle Visitado */}
                     <button
                       onClick={() => toggleVisitado(lugar)}
-                      className={`mt-1 transition-all transform active:scale-90 ${progreso[lugar.id] ? 'text-green-500' : 'text-sand-200 hover:text-sand-400'
+                      className={`mt-1 transition-all transform active:scale-90 ${progreso[lugar.id] ? 'text-green-500' : 'text-emerald-300 hover:text-emerald-500'
                         }`}
                     >
                       {progreso[lugar.id] ? <CheckCircle2 size={26} /> : <Circle size={26} />}
@@ -419,7 +419,7 @@ export default function LugaresPage() {
                           </span>
                           <div className="flex gap-0.5">
                             {[...Array(lugar.prioridad)].map((_, i) => (
-                              <Star key={i} size={10} fill="currentColor" className="text-yellow-400" />
+                              <Star key={i} size={10} fill="currentColor" className="text-amber-400 drop-shadow-[0_1px_1px_rgba(0,0,0,0.1)]" />
                             ))}
                           </div>
                         </div>

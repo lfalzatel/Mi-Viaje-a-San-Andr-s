@@ -187,7 +187,7 @@ export default function EquipajePage() {
   return (
     <main className="min-h-screen">
       {/* Header Premium Cinemático */}
-      <div className="relative bg-gradient-to-br from-teal-900 via-caribbean-900 to-caribbean-950 pt-16 pb-32 px-6 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-teal-900 via-caribbean-900 to-caribbean-950 pt-10 pb-20 px-6 overflow-hidden">
         {/* Elementos decorativos animados */}
         <div className="absolute top-[-10%] right-[-5%] w-64 h-64 bg-caribbean-400/20 rounded-full blur-[80px] animate-pulse" />
         <div className="absolute bottom-[-20%] left-[-10%] w-80 h-80 bg-emerald-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1.5s' }} />
