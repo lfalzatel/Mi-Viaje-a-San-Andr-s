@@ -199,11 +199,11 @@ export default function ItinerarioPage() {
 
   return (
     <main className="min-h-screen">
-      {/* Header Premium Cinemático */}
-      <div className="relative bg-gradient-to-br from-caribbean-900 via-indigo-900 to-caribbean-950 pt-10 pb-20 px-6 overflow-hidden">
-        {/* Elementos decorativos animados */}
-        <div className="absolute top-[-10%] right-[-5%] w-64 h-64 bg-caribbean-500/20 rounded-full blur-[80px] animate-pulse" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-80 h-80 bg-coral-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
+      {/* Header Premium Cinemático - Profundo y de Alto Contraste */}
+      <div className="relative bg-gradient-to-b from-[#0a192f] via-[#001d3d] to-[#000814] pt-10 pb-20 px-6 overflow-hidden">
+        {/* Elementos decorativos solo en la parte superior para evitar degradado al blanco abajo */}
+        <div className="absolute top-[-20%] right-[-10%] w-96 h-96 bg-caribbean-500/10 rounded-full blur-[100px] animate-pulse" />
+        <div className="absolute top-[-10%] left-[-10%] w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '1.5s' }} />
 
         <div className="max-w-4xl mx-auto relative z-10">
           <Link href="/" className="inline-flex items-center text-white/60 mb-8 hover:text-white transition-all group">

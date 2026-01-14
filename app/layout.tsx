@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { AuthProvider } from '@/lib/auth-context'
 import './globals.css'
 import Navigation from '@/components/Navigation'
+import SwipeLayout from '@/components/SwipeLayout'
 
 export const metadata: Metadata = {
   // ... existing metadata ...
@@ -31,9 +32,11 @@ export default function RootLayout({
     <html lang="es">
       <body className="bg-caribbean-50">
         <AuthProvider>
-          <div className="pb-32">
-            {children}
-          </div>
+          <SwipeLayout>
+            <div className="pb-32">
+              {children}
+            </div>
+          </SwipeLayout>
           <Navigation />
         </AuthProvider>
       </body>

@@ -186,11 +186,11 @@ export default function EquipajePage() {
 
   return (
     <main className="min-h-screen">
-      {/* Header Premium Cinemático */}
-      <div className="relative bg-gradient-to-br from-teal-900 via-caribbean-900 to-caribbean-950 pt-10 pb-20 px-6 overflow-hidden">
-        {/* Elementos decorativos animados */}
-        <div className="absolute top-[-10%] right-[-5%] w-64 h-64 bg-caribbean-400/20 rounded-full blur-[80px] animate-pulse" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-80 h-80 bg-emerald-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1.5s' }} />
+      {/* Header Premium Cinemático - Profundo y de Alto Contraste */}
+      <div className="relative bg-gradient-to-b from-[#082f49] via-[#0c4a6e] to-[#041e32] pt-10 pb-20 px-6 overflow-hidden">
+        {/* Elementos decorativos optimizados */}
+        <div className="absolute top-[-20%] right-[-10%] w-96 h-96 bg-teal-500/10 rounded-full blur-[100px] animate-pulse" />
+        <div className="absolute top-[-10%] left-[-5%] w-64 h-64 bg-emerald-500/5 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
 
         <div className="max-w-4xl mx-auto relative z-10">
           <Link href="/" className="inline-flex items-center text-white/60 mb-8 hover:text-white transition-all group">
