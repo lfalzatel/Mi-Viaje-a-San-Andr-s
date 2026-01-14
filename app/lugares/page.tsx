@@ -179,7 +179,7 @@ export default function LugaresPage() {
   return (
     <main className="min-h-screen">
       {/* Header Premium Cinemático */}
-      <div className="relative bg-gradient-to-br from-emerald-900 via-teal-900 to-emerald-950 pt-10 pb-20 px-6 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-emerald-900 via-teal-900 to-emerald-950 pt-6 pb-14 px-6 overflow-hidden">
         {/* Elementos decorativos animados */}
         <div className="absolute top-[-10%] right-[-5%] w-64 h-64 bg-caribbean-400/20 rounded-full blur-[80px] animate-pulse" />
         <div className="absolute bottom-[-20%] left-[-10%] w-80 h-80 bg-mint-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '2s' }} />
@@ -347,7 +347,7 @@ export default function LugaresPage() {
         </div>
       )}
 
-      <div className="px-6 -mt-8 max-w-4xl mx-auto relative z-20">
+      <div className="px-6 -mt-12 max-w-4xl mx-auto relative z-20">
 
         {/* Filtros */}
         <div className="flex gap-2 overflow-x-auto pb-4 mb-2 hide-scrollbar">

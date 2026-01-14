@@ -264,7 +264,7 @@ export default function PresupuestoPage() {
   return (
     <main className="min-h-screen">
       {/* Header Premium Cinemático */}
-      <div className="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-950 pt-10 pb-20 px-6 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-950 pt-6 pb-14 px-6 overflow-hidden">
         {/* Elementos decorativos animados */}
         <div className="absolute top-[-10%] right-[-5%] w-64 h-64 bg-coral-500/20 rounded-full blur-[80px] animate-pulse" />
         <div className="absolute bottom-[-20%] left-[-10%] w-80 h-80 bg-caribbean-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
@@ -401,7 +401,7 @@ export default function PresupuestoPage() {
         </div>
       )}
 
-      <div className="px-6 -mt-16 max-w-4xl mx-auto relative z-20">
+      <div className="px-6 -mt-14 max-w-4xl mx-auto relative z-20">
         {/* Selector de Sub-pestañas */}
         <div className="bg-white/20 backdrop-blur-md p-1.5 rounded-2xl mb-6 flex gap-1 border border-white/30">
           <button

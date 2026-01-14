@@ -187,7 +187,7 @@ export default function EquipajePage() {
   return (
     <main className="min-h-screen">
       {/* Header Premium Cinemático - Profundo y de Alto Contraste */}
-      <div className="relative bg-gradient-to-b from-[#082f49] via-[#0c4a6e] to-[#041e32] pt-10 pb-20 px-6 overflow-hidden">
+      <div className="relative bg-gradient-to-b from-[#082f49] via-[#0c4a6e] to-[#041e32] pt-6 pb-14 px-6 overflow-hidden">
         {/* Elementos decorativos optimizados */}
         <div className="absolute top-[-20%] right-[-10%] w-96 h-96 bg-teal-500/10 rounded-full blur-[100px] animate-pulse" />
         <div className="absolute top-[-10%] left-[-5%] w-64 h-64 bg-emerald-500/5 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
@@ -320,7 +320,7 @@ export default function EquipajePage() {
         </div>
       )}
 
-      <div className="px-6 -mt-8 max-w-4xl mx-auto relative z-20">
+      <div className="px-6 -mt-12 max-w-4xl mx-auto relative z-20">
 
         {/* Sugerencias Toggle */}
         {isAdmin && (
