@@ -227,15 +227,41 @@ export default function ItinerarioPage() {
             </div>
 
             <div className="animate-scale-in flex flex-col items-end">
-              <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-6 rounded-[2.5rem] shadow-2xl">
-                <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-right">Tu Progreso</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-caribbean-500 flex items-center justify-center text-white shadow-lg shadow-caribbean-500/20">
-                    <Calendar size={20} />
+              <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-6 rounded-[2.5rem] shadow-2xl w-full sm:w-auto min-w-[280px]">
+                <div className="flex justify-between items-start mb-4 gap-8">
+                  <div>
+                    <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-2">Tu Progreso</p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-caribbean-500 flex items-center justify-center text-white shadow-lg shadow-caribbean-500/20">
+                        <Calendar size={20} />
+                      </div>
+                      <span className="font-display text-3xl md:text-4xl font-black text-white italic">
+                        {actividadesCompletadas} / {totalActividades}
+                      </span>
+                    </div>
                   </div>
-                  <span className="font-display text-3xl md:text-4xl font-black text-white italic">
-                    {actividadesCompletadas} / {totalActividades}
-                  </span>
+                  <div className="text-right">
+                    <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-2">Presupuesto</p>
+                    <p className="font-display text-2xl md:text-3xl font-black text-coral-400 italic">
+                      {formatearMoneda(gastoAcumulado)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Progress bar inside glass card */}
+                <div className="space-y-2">
+                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-caribbean-400 to-caribbean-600 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(0,160,230,0.5)]"
+                      style={{ width: `${(actividadesCompletadas / totalActividades) * 100}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">Aventura</span>
+                    <span className="text-[9px] font-black text-caribbean-300 bg-caribbean-500/10 px-2 py-0.5 rounded-md">
+                      {((actividadesCompletadas / totalActividades) * 100).toFixed(0)}% COMPLETADO
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
