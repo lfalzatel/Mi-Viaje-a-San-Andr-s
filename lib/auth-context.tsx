@@ -49,11 +49,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setRole(userRole)
 
             if (pathname === '/login') {
-                router.push('/itinerario')
+                router.push('/')
             }
         } else {
             setRole(null)
-            if (pathname !== '/login' && pathname !== '/') {
+            if (pathname !== '/login') {
                 router.push('/login')
             }
         }
